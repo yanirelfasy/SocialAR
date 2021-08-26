@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SocialAR</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoieWFuaXJlbGZhc3N5IiwiYSI6ImNrc3J2OWxpYTBqNnoyb3BubmViMGdtb3cifQ.Ezo8w8GV9s36dZZtUPSRYQ</string>
+</resources>
