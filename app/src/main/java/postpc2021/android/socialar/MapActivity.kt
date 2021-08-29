@@ -13,14 +13,15 @@ import androidx.core.app.ActivityCompat
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.LocationComponentOptions
+import com.mapbox.mapboxsdk.location.OnLocationCameraTransitionListener
 import com.mapbox.mapboxsdk.location.modes.CameraMode
 import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin
@@ -40,31 +41,55 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		supportActionBar!!.hide()
+
 		initializeMap(savedInstanceState)
 
 		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
 		changeViewButton.setOnClickListener{ view ->
-			var position: CameraPosition? = null
-			val currentCameraPosition = mapboxMap?.cameraPosition
-			val currentZoom = currentCameraPosition?.zoom
 			val fogBackground: ImageView = findViewById(R.id.fogBackground)
 			if(this.mode == MapMode.FOG){
 				this.mode = MapMode.TOP
 				fogBackground.visibility = View.INVISIBLE
-				position = CameraPosition.Builder().tilt(0.0).zoom(currentZoom!!).target(currentCameraPosition.target).build()
 				mapboxMap?.setMaxZoomPreference(25.0)
+				mapboxMap?.setMinZoomPreference(0.0)
 				buildingPlugin!!.setVisibility(false)
+				setCameraTrackingMode(CameraMode.NONE)
 
 			}
 			else{
 				this.mode = MapMode.FOG
 				fogBackground.visibility = View.VISIBLE
-				position = CameraPosition.Builder().tilt(59.0).zoom(currentZoom!!).target(currentCameraPosition.target).build()
 				mapboxMap?.setMaxZoomPreference(18.8)
+				mapboxMap?.setMinZoomPreference(15.0)
 				buildingPlugin!!.setVisibility(true)
+				setCameraTrackingMode(CameraMode.TRACKING_COMPASS)
 			}
-			mapboxMap?.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000)
 		}
+	}
+
+	private fun setCameraTrackingMode(@CameraMode.Mode mode: Int) {
+		val locationComponent = this.mapboxMap!!.locationComponent
+		locationComponent.setCameraMode(mode, object : OnLocationCameraTransitionListener {
+			override fun onLocationCameraTransitionFinished(@CameraMode.Mode cameraMode: Int) {
+				if (mode != CameraMode.NONE) {
+					locationComponent.zoomWhileTracking(17.17, 200, object : CancelableCallback {
+						override fun onCancel() {
+							// No impl
+						}
+
+						override fun onFinish() {
+							locationComponent.tiltWhileTracking(59.0)
+						}
+					})
+				} else {
+					mapboxMap!!.animateCamera(CameraUpdateFactory.tiltTo(0.0), 500)
+				}
+			}
+
+			override fun onLocationCameraTransitionCanceled(@CameraMode.Mode cameraMode: Int) {
+				// No impl
+			}
+		})
 	}
 
 	fun initializeMap(savedInstanceState: Bundle?){
@@ -86,8 +111,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			buildingPlugin = BuildingPlugin(mapView!!, mapboxMap, style)
 			buildingPlugin!!.setVisibility(this.mode == MapMode.FOG)
 			enableLocationComponent(style)
-			val uiSettings = mapboxMap.uiSettings
-			uiSettings.isCompassEnabled = false
+//			val uiSettings = mapboxMap.uiSettings
+//			uiSettings.isCompassEnabled = false
 		}
 	}
 
@@ -126,7 +151,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			locationComponent.cameraMode = CameraMode.TRACKING_COMPASS
 
 			// Set the component's render mode
-			locationComponent.renderMode = RenderMode.COMPASS
+			locationComponent.renderMode = RenderMode.GPS
 		} else {
 			permissionsManager = PermissionsManager(this)
 			permissionsManager!!.requestLocationPermissions(this)

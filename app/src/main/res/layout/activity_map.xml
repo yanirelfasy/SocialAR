@@ -18,6 +18,7 @@
             mapbox:mapbox_cameraZoom="17.17"
             mapbox:mapbox_cameraTilt="59"
             mapbox:mapbox_cameraZoomMax="18.02"
+            mapbox:mapbox_cameraZoomMin="15.0"
             />
 
         <ImageView
