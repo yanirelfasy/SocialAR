@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "postpc2021.android.socialar"
-        minSdkVersion 16
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -39,8 +39,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-building-v9:0.7.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.ar:core:1.26.0'
 }
 repositories {
     mavenCentral()

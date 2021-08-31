@@ -3,6 +3,7 @@ package postpc2021.android.socialar
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -14,6 +15,7 @@ import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
 import com.mapbox.mapboxsdk.location.LocationComponentOptions
 import com.mapbox.mapboxsdk.location.OnLocationCameraTransitionListener
@@ -24,6 +26,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.MapboxMap.CancelableCallback
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin
 
 
@@ -41,10 +45,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		supportActionBar!!.hide()
-
 		initializeMap(savedInstanceState)
 
 		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
+		changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
 		changeViewButton.setOnClickListener{ view ->
 			val fogBackground: ImageView = findViewById(R.id.fogBackground)
 			if(this.mode == MapMode.FOG){
@@ -54,7 +58,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				mapboxMap?.setMinZoomPreference(0.0)
 				buildingPlugin!!.setVisibility(false)
 				setCameraTrackingMode(CameraMode.NONE)
-
+				changeViewButton.setImageResource(android.R.drawable.ic_menu_view)
 			}
 			else{
 				this.mode = MapMode.FOG
@@ -63,6 +67,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				mapboxMap?.setMinZoomPreference(15.0)
 				buildingPlugin!!.setVisibility(true)
 				setCameraTrackingMode(CameraMode.TRACKING_COMPASS)
+				changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
 			}
 		}
 	}
@@ -110,10 +115,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			// Using the Mapbox Building Plugin to easily display 3D extrusions on the map
 			buildingPlugin = BuildingPlugin(mapView!!, mapboxMap, style)
 			buildingPlugin!!.setVisibility(this.mode == MapMode.FOG)
+			style.addImage(
+					"marker",
+					BitmapFactory.decodeResource(this.getResources(), R.drawable.mapbox_marker_icon_default)
+			);
 			enableLocationComponent(style)
 //			val uiSettings = mapboxMap.uiSettings
 //			uiSettings.isCompassEnabled = false
+			drawMarkersInMap(style)
 		}
+	}
+
+	private fun drawMarkersInMap(style: Style){
+		// Create symbol manager object.
+		val symbolManager = SymbolManager(mapView!!, mapboxMap!!, style);
+		symbolManager.iconAllowOverlap = true;
+		symbolManager.textAllowOverlap = true;
+		// Create a symbol at the specified location.
+		val symbol: SymbolOptions = SymbolOptions()
+				.withLatLng(LatLng(32.687337, 84.381457))
+				.withIconImage("marker")
+				.withIconSize(1.3f)
+		symbolManager.create(symbol)
 	}
 
 	private fun enableLocationComponent(loadedMapStyle: Style) {

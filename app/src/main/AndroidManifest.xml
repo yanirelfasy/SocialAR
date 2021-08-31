@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="postpc2021.android.socialar">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!--
+ Limits app visibility in the Google Play Store to ARCore supported devices
+         (https://developers.google.com/ar/devices).
+    -->
+    <uses-feature android:name="android.hardware.camera.ar" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SocialAR">
-        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".ARView"></activity>
+        <!--
+         "AR Required" app, requires "Google Play Services for AR" (ARCore)
+        to be installed, as the app does not include any non-AR features.
+        -->
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="required" />
+
+        <activity android:name=".MapActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
