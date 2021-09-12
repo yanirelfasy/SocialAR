@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "694166742682",
+    "project_id": "socialbridge-b056f",
+    "storage_bucket": "socialbridge-b056f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694166742682:android:8371ba62d138fd4a172123",
+        "android_client_info": {
+          "package_name": "postpc2021.android.socialar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694166742682-vsjgjcsb222qcpdp8tskrrnfqd9uhe4i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8k44qo6zh22anzufazm-vOeBbTfQ8f-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694166742682-vsjgjcsb222qcpdp8tskrrnfqd9uhe4i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
