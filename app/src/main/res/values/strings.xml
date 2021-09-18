@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">SocialAR</string>
     <string name="mapbox_access_token">pk.eyJ1IjoieWFuaXJlbGZhc3N5IiwiYSI6ImNrc3J2OWxpYTBqNnoyb3BubmViMGdtb3cifQ.Ezo8w8GV9s36dZZtUPSRYQ</string>
+    <string name="facebook_application_id" translatable="false">377866297283807</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb377866297283807</string>
 </resources>
