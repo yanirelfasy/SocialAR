@@ -11,9 +11,7 @@ import com.wikitude.architect.ArchitectView
 import com.wikitude.common.devicesupport.Feature
 import com.wikitude.common.permission.PermissionManager
 import com.wikitude.common.permission.PermissionManager.PermissionManagerCallback
-import postpc2021.android.socialar.arComponents.ArchitectViewExtensionActivity
-import postpc2021.android.socialar.arComponents.LocationAR
-import postpc2021.android.socialar.arComponents.PoiDataFromApplicationModelExtension
+import postpc2021.android.socialar.arComponents.ARView
 import java.util.*
 
 enum class Feature {
@@ -41,9 +39,8 @@ class MainActivity : AppCompatActivity(){
 		if (availability.isSupported) {
 			permissionManager.checkPermissions(this@MainActivity, permissions, PermissionManager.WIKITUDE_PERMISSION_REQUEST, object : PermissionManagerCallback {
 				override fun permissionsGranted(requestCode: Int) {
-					val intent = Intent(this@MainActivity, ArchitectViewExtensionActivity::class.java)
+					val intent = Intent(this@MainActivity, ARView::class.java)
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-					print("CHANGING ACTIVITY")
 					startActivity(intent)
 				}
 

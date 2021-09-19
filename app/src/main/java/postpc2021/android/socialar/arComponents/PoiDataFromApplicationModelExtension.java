@@ -52,13 +52,12 @@ public class PoiDataFromApplicationModelExtension extends ArchitectViewExtension
         final String ATTR_LONGITUDE = "longitude";
         final String ATTR_ALTITUDE = "altitude";
 
-        // generates 20 POIs
-        for (int i = 1; i <= 20; i++) {
+        double[][] POI_COORDINATES_DEMO = {{31.895120285543527, 35.00513086114198}, {31.896131623870144, 35.00318713275174}, {31.893764052276612, 35.00793490652589}, {31.89639793721652, 35.008242712353805}};
+        String[] DATA = {"0001", "0002", "0003", "0004"};
+        for (int i = 0; i < POI_COORDINATES_DEMO.length; i++) {
             final HashMap<String, String> poiInformation = new HashMap<String, String>();
-            poiInformation.put(ATTR_ID, String.valueOf(i));
-            poiInformation.put(ATTR_NAME, "POI#" + i);
-            poiInformation.put(ATTR_DESCRIPTION, "This is the description of POI#" + i);
-            double[] poiLocationLatLon = getRandomLatLonNearby(userLocation.getLatitude(), userLocation.getLongitude());
+            poiInformation.put(ATTR_ID, DATA[i]);
+            double[] poiLocationLatLon = {POI_COORDINATES_DEMO[i][0], POI_COORDINATES_DEMO[i][1]};
             poiInformation.put(ATTR_LATITUDE, String.valueOf(poiLocationLatLon[0]));
             poiInformation.put(ATTR_LONGITUDE, String.valueOf(poiLocationLatLon[1]));
             final float UNKNOWN_ALTITUDE = -32768f;  // equals "AR.CONST.UNKNOWN_ALTITUDE" in JavaScript (compare AR.GeoLocation specification)
@@ -66,12 +65,9 @@ public class PoiDataFromApplicationModelExtension extends ArchitectViewExtension
             poiInformation.put(ATTR_ALTITUDE, String.valueOf(UNKNOWN_ALTITUDE));
             pois.put(new JSONObject(poiInformation));
         }
-
         return pois;
     }
 
-    private static double[] getRandomLatLonNearby(final double lat, final double lon) {
-        return new double[]{lat + Math.random() / 5 - 0.1, lon + Math.random() / 5 - 0.1};
-    }
+
 
 }
