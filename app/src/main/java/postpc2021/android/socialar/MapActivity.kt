@@ -2,6 +2,7 @@ package postpc2021.android.socialar
 
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -47,6 +48,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		supportActionBar!!.hide()
 		initializeMap(savedInstanceState)
 
+		val profileButton = findViewById<ImageButton>(R.id.profileButton)
+		profileButton.setImageResource(android.R.drawable.ic_dialog_info)
+		profileButton.setOnClickListener {
+			val intent = Intent(this, ProfileActivity::class.java)
+			startActivity(intent)
+		}
 		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
 		changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
 		changeViewButton.setOnClickListener{ view ->

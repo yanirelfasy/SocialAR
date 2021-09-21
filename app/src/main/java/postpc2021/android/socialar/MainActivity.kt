@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(){
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		isARCompatible()
+
 	}
 
 	private fun isARCompatible() {
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity(){
 		if (availability.isSupported) {
 			permissionManager.checkPermissions(this@MainActivity, permissions, PermissionManager.WIKITUDE_PERMISSION_REQUEST, object : PermissionManagerCallback {
 				override fun permissionsGranted(requestCode: Int) {
-					val intent = Intent(this@MainActivity, ARView::class.java)
+					val intent = Intent(this@MainActivity, MapActivity::class.java)
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 					startActivity(intent)
 				}
