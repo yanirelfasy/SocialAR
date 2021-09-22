@@ -21,12 +21,12 @@ function Marker(poiData) {
 
     this.markerDrawableIdle = new AR.HtmlDrawable(
         {
-            uri: `http://192.168.1.21:3000/index.html?markerID=${poiData.id}&distance=${poiData.distanceToUser}`
+            uri: `http://192.168.1.24:3000/index.html?markerID=${poiData.id}&distance=${poiData.distanceToUser}`
         }, 10, 
         {
             viewportWidth: 800, 
             viewportHeight: 600,
-            // onClick: Marker.prototype.getOnClickTrigger(this)
+            onClick: Marker.prototype.getOnClickTrigger(this)
         }
         )
 
