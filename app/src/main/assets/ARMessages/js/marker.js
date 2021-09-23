@@ -21,7 +21,7 @@ function Marker(poiData) {
 
     this.markerDrawableIdle = new AR.HtmlDrawable(
         {
-            uri: `http://192.168.1.24:3000/index.html?markerID=${poiData.id}&distance=${poiData.distanceToUser}`
+            uri: `http://192.168.1.3:3000/index.html?markerID=${poiData.id}&distance=${poiData.distanceToUser}`
         }, 10, 
         {
             viewportWidth: 800, 
