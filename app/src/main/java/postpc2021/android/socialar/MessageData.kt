@@ -1,16 +1,21 @@
 package postpc2021.android.socialar
 
 import android.net.Uri
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.core.GeoHash
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 data class MessageData(
     val userID: String = "", // Id of the user that left the message
-    val longitude: Float = 0f, // The longitude
-    val latitude: Float = 0f, // The latitude
+    val latitude: Double = 0.0, // The latitude
+    val longitude: Double = 0.0, // The longitude
     val textContent: String = "", // Text content of the message
-    val mediaContent : List<Uri>? = null, // List of media file Uri's
-    val likeID: List<String>? = null // List of UserIds of those who liked the message
-    ) : Serializable {
-        val id: String = UUID.randomUUID().toString() // Id of the message
+    var mediaContent: ArrayList<String> = ArrayList(), // List of media file download Uri's
+    val likeID: ArrayList<String> = ArrayList(), // List of UserIds of those who liked the message
+    val geoHash: String = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))// Geohash for the location, used for querying
+) : Serializable {
+    val id: String = UUID.randomUUID().toString() // Id of the message
 }

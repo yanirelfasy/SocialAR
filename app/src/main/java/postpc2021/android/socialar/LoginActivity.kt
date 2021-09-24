@@ -16,12 +16,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     lateinit var firebaseAuth: FirebaseAuth
-    lateinit var listener: FirebaseAuth.AuthStateListener
+//    lateinit var listener: FirebaseAuth.AuthStateListener
     lateinit var providers: List<AuthUI.IdpConfig>
 
 
 
     private fun init(){
+
+        firebaseAuth = FirebaseAuth.getInstance()
         providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build()
@@ -34,11 +36,18 @@ class LoginActivity : AppCompatActivity() {
         signInLauncher.launch(signInIntent)
     }
 
+
+
+    /**
+     * Result from sign in is received here
+     * */
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
+
+
             // ...
         } else {
             // Sign in failed. If response is null the user canceled the
@@ -48,14 +57,17 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+
+
+
     fun emailLink() {
         val actionCodeSettings = ActionCodeSettings.newBuilder()
-            .setAndroidPackageName( /* yourPackageName= */
-                "...",  /* installIfNotAvailable= */
-                true,  /* minimumVersion= */
+            .setAndroidPackageName(
+                "postpc2021.android.socialar",
+                true,
                 null)
-            .setHandleCodeInApp(true) // This must be set to true
-            .setUrl("https://google.com") // This URL needs to be whitelisted
+            .setHandleCodeInApp(true)
+            .setUrl("https://google.com")
             .build()
 
         val providers = listOf(
@@ -69,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
             .setAvailableProviders(providers)
             .build()
         signInLauncher.launch(signInIntent)
-        // [END auth_fui_email_link]
+
     }
 
 
@@ -80,13 +92,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        firebaseAuth.addAuthStateListener(listener)
+//        firebaseAuth.addAuthStateListener(listener)
     }
 
     override fun onStop() {
-        if (listener != null) {
-            firebaseAuth.removeAuthStateListener(listener)
-        }
+//        if (listener != null) {
+//            firebaseAuth.removeAuthStateListener(listener)
+//        }
         super.onStop()
     }
 
