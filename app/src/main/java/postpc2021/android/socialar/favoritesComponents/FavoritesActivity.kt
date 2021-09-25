@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import postpc2021.android.socialar.MapActivity
 import postpc2021.android.socialar.R
 
 
@@ -22,6 +25,12 @@ class FavoritesActivity : AppCompatActivity() {
         holder = FavoriteItemsHolderImpl(this.applicationContext)
         val fav = FavoriteItem()
         holder!!.addNewFavObject(fav)
+        val mapButton = findViewById<FloatingActionButton>(R.id.seeItemsOnMapButton)
+        mapButton.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("favorites", holder!!.getFavoritesLocationsList()) /// TODO: change to firebase key for relevant data
+            this.startActivity(intent)
+        }
         val adapter = MyFavsAdapter(holder)
         val favoritesRecyclerView = findViewById<RecyclerView>(R.id.favorites_recyclerView)
         favoritesRecyclerView.adapter = adapter

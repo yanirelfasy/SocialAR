@@ -6,8 +6,8 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import postpc2021.android.socialar.MapActivity
 import postpc2021.android.socialar.R
 import java.util.ArrayList
 
@@ -15,6 +15,7 @@ class MyFavsAdapter(holder: FavoriteItemsHolderImpl?): RecyclerView.Adapter<Favo
     private var items: FavoriteItemsHolderImpl? = holder
     private var guiHolderList: MutableList<FavoriteItemGui>? = ArrayList()
     var onDeleteCallBack: ((Int)->Unit)?=null
+    private var clickedPosition: Int = -1
     lateinit var myContext: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteItemGui {
@@ -23,22 +24,25 @@ class MyFavsAdapter(holder: FavoriteItemsHolderImpl?): RecyclerView.Adapter<Favo
                 LayoutInflater.from(myContext).inflate(R.layout.favorite_item, parent,
                         false)
         view.setOnClickListener {
-//            val intent = Intent(myContext, FavoritesMapActivity::class.java)
-//            myContext.startActivity(intent)
-            /// TODO: open Map Activity with list of posts
-            Toast.makeText(myContext, "Clicked!", Toast.LENGTH_SHORT).show()
+            val item: FavoriteItem = items!!.getCurrentFavsItems()!![this.clickedPosition]
+            val intent = Intent(myContext, MapActivity::class.java)
+            val locationPair: Pair<Double, Double> = Pair(item.getLongitude(), item.getLatitude())
+            val tempList = ArrayList<Pair<Double, Double>>()
+            tempList.add(locationPair)
+            intent.putExtra("favorites", tempList) /// TODO: change to firebase key for relevant data
+            myContext.startActivity(intent)
         }
         return FavoriteItemGui(view)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(favItemGuiHolder: FavoriteItemGui, position: Int) {
-        val item: FavoriteItem = items!!.getCurrentFavsItems()!![position]
         guiHolderList!!.add(favItemGuiHolder)
         favItemGuiHolder.deleteFavButton.setOnClickListener(View.OnClickListener {
             val callback = onDeleteCallBack?:return@OnClickListener
             callback(favItemGuiHolder.adapterPosition)
         })
+        this.clickedPosition = favItemGuiHolder.adapterPosition
     }
 
     override fun getItemCount(): Int {

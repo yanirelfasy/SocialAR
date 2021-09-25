@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import postpc2021.android.socialar.MapActivity
 import postpc2021.android.socialar.R
 
 
@@ -23,6 +26,12 @@ class MyPostsActivity : AppCompatActivity() {
         holder = MyPostsItemsHolderImpl(this.applicationContext)
         val fav = MyPostsItem()
         holder!!.addNewMyPostObject(fav)
+        val mapButton = findViewById<FloatingActionButton>(R.id.seeItemsOnMapButton)
+        mapButton.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("myPosts", holder!!.getMyPostsLocationsList()) /// TODO: change to firebase key for relevant data
+            this.startActivity(intent)
+        }
         val adapter = MyPostsAdapter(holder)
         val myPostsRecyclerView = findViewById<RecyclerView>(R.id.my_posts_recyclerView)
         myPostsRecyclerView.adapter = adapter

@@ -3,6 +3,7 @@ package postpc2021.android.socialar.myPostsComponents
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import postpc2021.android.socialar.favoritesComponents.FavoriteItem
 import java.io.Serializable
 import java.util.*
 
@@ -101,6 +102,16 @@ class MyPostsItemsHolderImpl(context: Context): Serializable {
             return  // ignore
         }
         myPostsList = prevState.myPosts
+    }
+
+    fun getMyPostsLocationsList(): ArrayList<Pair<Double, Double>>?
+    {
+        val locations = ArrayList<Pair<Double, Double>>()
+        for (item: MyPostsItem in myPostsList!!)
+        {
+            locations.add(Pair(item.getLongitude(), item.getLatitude()))
+        }
+        return locations
     }
 
     private class MyPostsListState : Serializable {

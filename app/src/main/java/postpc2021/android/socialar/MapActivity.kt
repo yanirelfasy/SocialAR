@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -42,6 +43,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	private var permissionsManager: PermissionsManager? = null
 	private var mapboxMap : MapboxMap? = null
 	private var mode = MapMode.FOG
+	private var locations = ArrayList<Pair<Double, Double>>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -76,6 +78,34 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				setCameraTrackingMode(CameraMode.TRACKING_COMPASS)
 				changeViewButton.setImageResource(android.R.drawable.presence_offline)
 			}
+		}
+	}
+
+	private fun getLocationsFromExtras()
+	{
+		val extras = intent.extras
+		if(extras != null)
+		{
+			val favorites = extras.get("favorites")
+			val myPosts = extras.get("myPosts")
+			if(favorites != null)
+			{
+				this.locations = favorites as ArrayList<Pair<Double, Double>>
+
+			}
+			else if(myPosts != null)
+			{
+				this.locations = myPosts as ArrayList<Pair<Double, Double>>
+			}
+			else
+			{
+				return
+			}
+			val changeViewButton = findViewById<ImageButton>(R.id.changeView)
+			changeViewButton.performClick()
+			findViewById<ImageButton>(R.id.profileButton).visibility = View.GONE
+			changeViewButton.visibility = View.GONE
+			findViewById<AppCompatButton>(R.id.addMessage).visibility = View.GONE
 		}
 	}
 
@@ -129,6 +159,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			enableLocationComponent(style)
 //			val uiSettings = mapboxMap.uiSettings
 //			uiSettings.isCompassEnabled = false
+			getLocationsFromExtras()
 			drawMarkersInMap(style)
 		}
 	}
@@ -139,11 +170,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		symbolManager.iconAllowOverlap = true;
 		symbolManager.textAllowOverlap = true;
 		// Create a symbol at the specified location.
-		val symbol: SymbolOptions = SymbolOptions()
-				.withLatLng(LatLng(32.687337, 84.381457))
-				.withIconImage("marker")
-				.withIconSize(1.3f)
-		symbolManager.create(symbol)
+		for(location: Pair<Double, Double> in this.locations)
+		{
+			val symbol: SymbolOptions = SymbolOptions()
+					.withLatLng(LatLng(location.first, location.second))
+					.withIconImage("marker")
+					.withIconSize(1.3f)
+			symbolManager.create(symbol)
+		}
+//		val symbol: SymbolOptions = SymbolOptions()
+//				.withLatLng(LatLng(32.687337, 84.381457))
+//				.withIconImage("marker")
+//				.withIconSize(1.3f)
+//		symbolManager.create(symbol)
 	}
 
 	private fun enableLocationComponent(loadedMapStyle: Style) {

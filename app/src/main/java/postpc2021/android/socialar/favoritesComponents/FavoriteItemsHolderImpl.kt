@@ -5,6 +5,7 @@ import android.content.Intent
 import android.widget.Toast
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FavoriteItemsHolderImpl(context: Context): Serializable {
@@ -101,6 +102,16 @@ class FavoriteItemsHolderImpl(context: Context): Serializable {
             return  // ignore
         }
         favoritesList = prevState.favs
+    }
+
+    fun getFavoritesLocationsList(): ArrayList<Pair<Double, Double>>?
+    {
+        val locations = ArrayList<Pair<Double, Double>>()
+        for (item: FavoriteItem in favoritesList!!)
+        {
+            locations.add(Pair(item.getLongitude(), item.getLatitude()))
+        }
+        return locations
     }
 
     private class FavsListState : Serializable {
