@@ -3,8 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/drawable-small/ic_profile.xml" value="0.14635416666666667" />
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/drawable/button_menu.xml" value="0.14635416666666667" />
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/activity_a_r_view.xml" value="0.13020833333333334" />
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/activity_favorites.xml" value="0.3" />
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/activity_main.xml" value="0.13020833333333334" />
         <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/activity_map.xml" value="0.268" />
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/activity_my_posts.xml" value="0.19917864476386038" />
         <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/activity_profile.xml" value="0.2546875" />
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/favorite_item.xml" value="0.268" />
+        <entry key="..\:/AndroidStudioProjects/SocialAR/app/src/main/res/layout/my_post_item.xml" value="0.2" />
       </map>
     </option>
   </component>

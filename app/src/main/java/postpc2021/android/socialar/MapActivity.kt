@@ -48,9 +48,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		supportActionBar!!.hide()
 		initializeMap(savedInstanceState)
 
-		val profileButton = findViewById<ImageButton>(R.id.profileButton)
-		profileButton.setImageResource(android.R.drawable.ic_dialog_info)
-		profileButton.setOnClickListener {
+		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
+		profileImageButton.setImageResource(R.drawable.ic_profile_light)
+		profileImageButton.setOnClickListener {
 			val intent = Intent(this, ProfileActivity::class.java)
 			startActivity(intent)
 		}
@@ -74,7 +74,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				mapboxMap?.setMinZoomPreference(15.0)
 				buildingPlugin!!.setVisibility(true)
 				setCameraTrackingMode(CameraMode.TRACKING_COMPASS)
-				changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
+				changeViewButton.setImageResource(android.R.drawable.presence_offline)
 			}
 		}
 	}
