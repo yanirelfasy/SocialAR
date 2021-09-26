@@ -1,5 +1,8 @@
 package postpc2021.android.socialar.myPostsComponents
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.io.Serializable
+import java.time.LocalTime
 import java.util.*
 import kotlin.random.Random.Default.nextDouble
 
@@ -9,6 +12,8 @@ class MyPostsItem: Serializable{
     private var user_name = "user_name"
     private val long: Double = nextDouble()
     private val lat: Double = nextDouble()
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val ttl: LocalTime = LocalTime.now()
 
     fun setId(id: UUID) {
         this.uuid = id
@@ -38,5 +43,11 @@ class MyPostsItem: Serializable{
     fun getLatitude(): Double
     {
         return  this.lat
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTTL(): LocalTime
+    {
+        return this.ttl
     }
 }
