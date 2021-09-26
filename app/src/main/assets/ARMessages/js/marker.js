@@ -1,6 +1,10 @@
 var changeAnimationDuration = 500;
 var resizeAnimationDuration = 1000;
 
+// const SERVER_ADDRESS = 'https://social-ar-message-handler.herokuapp.com/index.html'
+// const SERVER_ADDRESS = 'http://192.168.1.3:3000/index.html'
+const SERVER_ADDRESS = 'https://socialar.web.app/index.html'
+
 function Marker(poiData) {
 
     this.poiData = poiData;
@@ -21,21 +25,26 @@ function Marker(poiData) {
 
     this.markerDrawableIdle = new AR.HtmlDrawable(
         {
-            uri: `http://192.168.1.3:3000/index.html?markerID=${poiData.id}&distance=${poiData.distanceToUser}`
+            uri: `${SERVER_ADDRESS}?markerID=${poiData.id}`
         }, 10, 
         {
             viewportWidth: 800, 
             viewportHeight: 600,
             onClick: Marker.prototype.getOnClickTrigger(this)
         }
-        )
+    )
 
-    /* Create an AR.ImageDrawable for the marker in selected state. */
-    this.markerDrawableSelected = new AR.ImageDrawable(World.markerDrawableSelected, 2.5, {
-        zOrder: 0,
-        opacity: 0.0,
-        onClick: null
-    });
+    this.markerDrawableSelected = new AR.HtmlDrawable(
+        {
+            uri: `${SERVER_ADDRESS}?markerID=${poiData.id}&isSelected=1`
+        }, 10, 
+        {
+            viewportWidth: 800, 
+            viewportHeight: 600,
+            onClick: Marker.prototype.getOnClickTrigger(this)
+        }
+    )
+
 
 
     /*
@@ -110,7 +119,6 @@ Marker.prototype.getOnClickTrigger = function(marker) {
 
         if (!Marker.prototype.isAnyAnimationRunning(marker)) {
             if (marker.isSelected) {
-
                 Marker.prototype.setDeselected(marker);
 
             } else {
