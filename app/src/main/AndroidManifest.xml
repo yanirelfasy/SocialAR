@@ -37,6 +37,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/Theme.SocialAR">
+        <activity android:name=".FireBaseTest" />
+        <activity android:name=".LoginActivity">
+
+        </activity>
+        <activity android:name=".SignInActivity" />
+        <activity android:name=".ARView" />
+
         android:theme="@style/Theme.SocialAR"
         android:usesCleartextTraffic="true">
         <activity android:name=".MessageActionsActivity"></activity>
@@ -44,6 +52,7 @@
         <activity
             android:name=".arComponents.ARView"
             android:configChanges="orientation|keyboardHidden|screenSize" />
+
         <!--
          "AR Required" app, requires "Google Play Services for AR" (ARCore)
         to be installed, as the app does not include any non-AR features.
@@ -53,6 +62,7 @@
             android:value="required" />
 
         <activity android:name=".MapActivity" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
