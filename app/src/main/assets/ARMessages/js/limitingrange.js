@@ -1,4 +1,4 @@
-const MAX_SHOW_DISTANCE = 30; //  max distance set to around 100m of visible markers
+const MAX_SHOW_DISTANCE = 100; //30  max distance set to around 100m of visible markers
 
 /* Implementation of AR-Experience (aka "World"). */
 var World = {
@@ -100,57 +100,29 @@ var World = {
 
     /* Fired when user pressed maker in cam. */
     onMarkerSelected: function onMarkerSelectedFn(marker) {
-        World.closePanel();
-
-        World.currentMarker = marker;
-
-        /*
-            In this sample a POI detail panel appears when pressing a cam-marker (the blue box with title &
-            description), compare index.html in the sample's directory.
-        */
-        /* Update panel values. */
-        document.getElementById("poiDetailTitle").innerHTML = marker.poiData.title;
-        document.getElementById("poiDetailDescription").innerHTML = marker.poiData.description;
-
-        /*
-            It's ok for AR.Location subclass objects to return a distance of `undefined`. In case such a distance
-            was calculated when all distances were queried in `updateDistanceToUserValues`, we recalculate this
-            specific distance before we update the UI.
-         */
-        if (undefined === marker.distanceToUser) {
-            marker.distanceToUser = marker.markerObject.locations[0].distanceToUser();
-        }
-
-        /*
-            Distance and altitude are measured in meters by the SDK. You may convert them to miles / feet if
-            required.
-        */
-        var distanceToUserValue = (marker.distanceToUser > 999) ?
-            ((marker.distanceToUser / 1000).toFixed(2) + " km") :
-            (Math.round(marker.distanceToUser) + " m");
-
-        document.getElementById("poiDetailDistance").innerHTML = distanceToUserValue;
-
-        /* Show panel. */
-        document.getElementById("panelPoiDetail").style.visibility = "visible";
-    },
-
-    closePanel: function closePanel() {
-        /* Hide panels. */
-        document.getElementById("panelPoiDetail").style.visibility = "hidden";
-        document.getElementById("panelRange").style.visibility = "hidden";
-
         if (World.currentMarker != null) {
             /* Deselect AR-marker when user exits detail screen div. */
             World.currentMarker.setDeselected(World.currentMarker);
             World.currentMarker = null;
         }
+        World.currentMarker = marker;
+        var markerSelectedJSON = {
+            action: "present_poi_details",
+            id: marker.poiData.id
+        };
+        /*
+            The sendJSONObject method can be used to send data from javascript to the native code.
+        */
+        AR.platform.sendJSONObject(markerSelectedJSON);
     },
 
     /* Screen was clicked but no geo-object was hit. */
     onScreenClick: function onScreenClickFn() {
-        /* You may handle clicks on empty AR space too. */
-        World.closePanel();
+        if (World.currentMarker != null) {
+            /* Deselect AR-marker when user exits detail screen div. */
+            World.currentMarker.setDeselected(World.currentMarker);
+            World.currentMarker = null;
+        }
     },
 
     /* Returns distance in meters of placemark with maxdistance * 1.1. */

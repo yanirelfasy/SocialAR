@@ -1,7 +1,8 @@
 var changeAnimationDuration = 500;
 var resizeAnimationDuration = 1000;
 
-const SERVER_ADDRESS = 'https://social-ar-message-handler.herokuapp.com/index.html'
+// const SERVER_ADDRESS = 'https://social-ar-message-handler.herokuapp.com/index.html'
+const SERVER_ADDRESS = 'http://192.168.1.3:3000/index.html'
 
 function Marker(poiData) {
 

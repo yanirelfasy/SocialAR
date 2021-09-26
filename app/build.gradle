@@ -44,6 +44,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.ar:core:1.26.0'
     implementation 'com.wikitude:js:9.10.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    implementation 'androidx.cardview:cardview:1.0.0'
 }
 repositories {
     mavenCentral()
