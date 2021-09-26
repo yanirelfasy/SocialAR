@@ -1,13 +1,4 @@
-/*
-    Information about server communication. This sample webservice is provided by Wikitude and returns random dummy
-    places near given location.
- */
-var ServerInformation = {
-    POIDATA_SERVER: "https://example.wikitude.com/GetSamplePois/",
-    POIDATA_SERVER_ARG_LAT: "lat",
-    POIDATA_SERVER_ARG_LON: "lon",
-    POIDATA_SERVER_ARG_NR_POIS: "nrPois"
-};
+const MAX_SHOW_DISTANCE = 30; //  max distance set to around 100m of visible markers
 
 /* Implementation of AR-Experience (aka "World"). */
 var World = {
@@ -17,12 +8,6 @@ var World = {
          userLocation.altitude.
      */
     userLocation: null,
-
-    /* You may request new data from server periodically, however: in this sample data is only requested once. */
-    isRequestingData: false,
-
-    /* True once data was fetched. */
-    initiallyLoadedData: false,
 
     /* Different POI-Marker assets. */
     markerDrawableIdle: null,
@@ -47,13 +32,6 @@ var World = {
         /* Empty list of visible markers. */
         World.markerList = [];
 
-        /* Start loading marker assets. */
-        // World.markerDrawableIdle = new AR.ImageResource("assets/marker_idle.png", {
-        //     onError: World.onError
-        // });
-        World.markerDrawableSelected = new AR.ImageResource("assets/marker_selected.png", {
-            onError: World.onError
-        });
         World.markerDrawableDirectionIndicator = new AR.ImageResource("assets/indi.png", {
             onError: World.onError
         });
@@ -69,14 +47,13 @@ var World = {
 
             World.markerList.push(new Marker(singlePoi));
         }
+    
 
         /* Updates distance information of all placemarks. */
         World.updateDistanceToUserValues();
 
-        World.updateStatusMessage(currentPlaceNr + ' places loaded');
+        World.renderToMaxDistance();
 
-        /* Set distance slider to 100%. */
-        document.getElementById("panelRangeSliderValue").innerHTML = 100;
     },
 
     /*
@@ -87,12 +64,6 @@ var World = {
         for (var i = 0; i < World.markerList.length; i++) {
             World.markerList[i].distanceToUser = World.markerList[i].markerObject.locations[0].distanceToUser();
         }
-    },
-
-    /* Updates status message shown in small "i"-button aligned bottom center. */
-    updateStatusMessage: function updateStatusMessageFn(message, isWarning) {
-        document.getElementById("popupButtonImage").src = isWarning ? "assets/warning_icon.png" : "assets/info_icon.png";
-        document.getElementById("popupButtonTooltip").innerHTML = message;
     },
 
     /* Location updates, fired every time you call architectView.setLocation() in native environment. */
@@ -108,10 +79,7 @@ var World = {
 
 
         /* Request data if not already present. */
-        if (!World.initiallyLoadedData) {
-            World.requestDataFromServer(lat, lon);
-            World.initiallyLoadedData = true;
-        } else if (World.locationUpdateCounter === 0) {
+        if (World.locationUpdateCounter === 0) {
             /*
                 Update placemark distance information frequently, you max also update distances only every 10m with
                 some more effort.
@@ -202,29 +170,9 @@ var World = {
     },
 
     /* Updates values show in "range panel". */
-    updateRangeValues: function updateRangeValuesFn() {
-
-        /* Get current slider value (0..100);. */
-        var slider_value = document.getElementById("panelRangeSlider").value;
+    renderToMaxDistance: function renderToMaxDistance() {
         /* Max range relative to the maximum distance of all visible places. */
-        var maxRangeMeters = Math.round(World.getMaxDistance() * (slider_value / 100));
-
-        /* Range in meters including metric m/km. */
-        var maxRangeValue = (maxRangeMeters > 999) ?
-            ((maxRangeMeters / 1000).toFixed(2) + " km") :
-            (Math.round(maxRangeMeters) + " m");
-
-        /* Number of places within max-range. */
-        var placesInRange = World.getNumberOfVisiblePlacesInRange(maxRangeMeters);
-
-        /* Update UI labels accordingly. */
-        document.getElementById("panelRangeValue").innerHTML = maxRangeValue;
-        document.getElementById("panelRangePlaces").innerHTML = (placesInRange != 1) ?
-            (placesInRange + " Places") : (placesInRange + " Place");
-        document.getElementById("panelRangeSliderValue").innerHTML = slider_value;
-
-        World.updateStatusMessage((placesInRange != 1) ?
-            (placesInRange + " places loaded") : (placesInRange + " place loaded"));
+        var maxRangeMeters = Math.round(World.getMaxDistance() * (MAX_SHOW_DISTANCE / 100));
 
         /* Update culling distance, so only places within given range are rendered. */
         AR.context.scene.cullingDistance = Math.max(maxRangeMeters, 1);
@@ -254,52 +202,6 @@ var World = {
         PoiRadar.updatePosition();
     },
 
-    /* Display range slider. */
-    showRange: function showRangeFn() {
-        if (World.markerList.length > 0) {
-            World.closePanel();
-
-            /* Update labels on every range movement. */
-            World.updateRangeValues();
-            World.handlePanelMovements();
-
-            /* Open panel. */
-            document.getElementById("panelRange").style.visibility = "visible";
-        } else {
-
-            /* No places are visible, because the are not loaded yet. */
-            World.updateStatusMessage('No places available yet', true);
-        }
-    },
-
-    /* Request POI data. */
-    requestDataFromServer: function requestDataFromServerFn(lat, lon) {
-
-        // /* Set helper var to avoid requesting places while loading. */
-        // World.isRequestingData = true;
-        // World.updateStatusMessage('Requesting places from web-service');
-
-        // /* Server-url to JSON content provider. */
-        // var serverUrl = ServerInformation.POIDATA_SERVER + "?" + ServerInformation.POIDATA_SERVER_ARG_LAT + "=" +
-        //     lat + "&" + ServerInformation.POIDATA_SERVER_ARG_LON + "=" +
-        //     lon + "&" + ServerInformation.POIDATA_SERVER_ARG_NR_POIS + "=20";
-
-        // /* Use GET request to fetch the JSON data from the server */
-        // var xhr = new XMLHttpRequest();
-        // xhr.open('GET', serverUrl, true);
-        // xhr.responseType = 'json';
-        // xhr.onload = function() {
-        //     var status = xhr.status;
-        //     if (status === 200) {
-        //         World.loadPoisFromJsonData(xhr.response);
-        //         World.isRequestingData = false;
-        //     } else {
-        //         World.updateStatusMessage("Invalid web-service response.", true);
-        //         World.isRequestingData = false;
-        //     }
-        // }
-        // xhr.send();
-    },
 
     /* Helper to sort places by distance. */
     sortByDistanceSorting: function sortByDistanceSortingFn(a, b) {
