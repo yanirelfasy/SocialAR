@@ -1,7 +1,9 @@
 package postpc2021.android.socialar
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -16,12 +18,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     lateinit var firebaseAuth: FirebaseAuth
-//    lateinit var listener: FirebaseAuth.AuthStateListener
+
+    //    lateinit var listener: FirebaseAuth.AuthStateListener
     lateinit var providers: List<AuthUI.IdpConfig>
 
 
-
-    private fun init(){
+    private fun init() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         providers = arrayListOf(
@@ -37,7 +39,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
     /**
      * Result from sign in is received here
      * */
@@ -45,9 +46,10 @@ class LoginActivity : AppCompatActivity() {
         val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
-            val user = FirebaseAuth.getInstance().currentUser
-
-
+            val userID = FirebaseAuth.getInstance().currentUser?.uid
+            val intent = Intent(this, FireBaseTest::class.java)
+            intent.putExtra("userid", userID)
+            startActivity(intent)
             // ...
         } else {
             // Sign in failed. If response is null the user canceled the
@@ -58,14 +60,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
-
     fun emailLink() {
         val actionCodeSettings = ActionCodeSettings.newBuilder()
             .setAndroidPackageName(
                 "postpc2021.android.socialar",
                 true,
-                null)
+                null
+            )
             .setHandleCodeInApp(true)
             .setUrl("https://google.com")
             .build()
@@ -85,11 +86,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
-
     override fun onStart() {
         super.onStart()
 //        firebaseAuth.addAuthStateListener(listener)
@@ -103,14 +99,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
     ) { res ->
         this.onSignInResult(res)
     }
-
-
 
 
 }

@@ -37,10 +37,9 @@ class FireBaseManager {
         val storageRef = storage.reference
         val file = Uri.fromFile(File(path))
         // Todo
-        val mediaRef = storageRef.child(messageID)
+        val mediaRef = storageRef.child("images/$messageID")
         val uploadTask = mediaRef.putFile(file)
         var downloadUri = ""
-
         uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
