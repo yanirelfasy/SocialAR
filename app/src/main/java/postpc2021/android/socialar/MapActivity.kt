@@ -33,6 +33,7 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin
+import postpc2021.android.socialar.dataTypes.MessageData
 
 
 enum class MapMode {
