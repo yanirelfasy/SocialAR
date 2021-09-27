@@ -10,11 +10,12 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import org.json.JSONArray
 import java.io.File
 import java.util.ArrayList
+import kotlin.reflect.KFunction1
 
 
 class FireBaseManager {
@@ -93,8 +94,8 @@ class FireBaseManager {
     /**
      * Given a point of interest (latitude, longitude) and a radius in meters, returns a list of all messages within that range
      * */
-    fun getMessagesByPoIandRange(latitude: Double, longitude: Double, radiusInMeters: Double): List<MessageData> {
-        val messages = mutableListOf<MessageData>()
+    fun getMessagesByPoIandRange(latitude: Double, longitude: Double, radiusInMeters: Double, onDone: KFunction1<ArrayList<MessageData>, Unit>){
+        val messages = ArrayList<MessageData>()
         val center = GeoLocation(latitude, longitude)
 
 
@@ -110,22 +111,23 @@ class FireBaseManager {
             tasks.add(query.get())
         }
         // Once complete, get rid of false positives while aggregating the matching results in the list
-        Tasks.whenAllComplete(tasks).addOnCompleteListener {
-            for (task: Task<QuerySnapshot> in tasks) {
-                val snapshot: QuerySnapshot = task.result
-                for (doc: DocumentSnapshot in snapshot.documents) {
-                    val lat: Double = doc.getDouble("latitude")!!
-                    val lng: Double = doc.getDouble("longitude")!!
-                    val docloc = GeoLocation(lat, lng)
-                    val distanceInMeters: Double = GeoFireUtils.getDistanceBetween(docloc, center)
-                    if (distanceInMeters <= radiusInMeters) {
-                        messages.add(doc.toObject(MessageData::class.java)!!)
+        Tasks.whenAllComplete(tasks).addOnCompleteListener{
+            it.addOnCompleteListener{
+                for (task: Task<QuerySnapshot> in tasks) {
+                    val snapshot: QuerySnapshot = task.result
+                    for (doc: DocumentSnapshot in snapshot.documents) {
+                        val lat: Double = doc.getDouble("latitude")!!
+                        val lng: Double = doc.getDouble("longitude")!!
+                        val docloc = GeoLocation(lat, lng)
+                        val distanceInMeters: Double = GeoFireUtils.getDistanceBetween(docloc, center)
+                        if (distanceInMeters <= radiusInMeters) {
+                            messages.add(doc.toObject(MessageData::class.java)!!)
+                        }
                     }
                 }
-
+                onDone(messages)
             }
         }
-        return messages
     }
 
     /**

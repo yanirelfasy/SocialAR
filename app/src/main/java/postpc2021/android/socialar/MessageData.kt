@@ -4,6 +4,7 @@ import android.net.Uri
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.core.GeoHash
+import com.google.type.DateTime
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,6 +16,7 @@ data class MessageData(
         val textContent: String = "", // Text content of the message
         var mediaContent: ArrayList<String> = ArrayList(), // List of media file download Uri's
         val likeID: ArrayList<String> = ArrayList(), // List of UserIds of those who liked the message
+        val creationDate: String = ""
 ) : Serializable {
     val geoHash: String = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))// Geohash for the location, used for querying
     val id: String = UUID.randomUUID().toString() // Id of the message
