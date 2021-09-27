@@ -1,4 +1,4 @@
-package postpc2021.android.socialar
+package postpc2021.android.socialar.dataTypes
 
 import android.net.Uri
 import com.firebase.geofire.GeoFireUtils

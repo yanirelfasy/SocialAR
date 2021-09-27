@@ -6,13 +6,13 @@ import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryBounds
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import org.json.JSONArray
+import postpc2021.android.socialar.dataTypes.MessageData
+import postpc2021.android.socialar.dataTypes.PostData
+import postpc2021.android.socialar.dataTypes.UserData
 import java.io.File
 import java.util.ArrayList
 import kotlin.reflect.KFunction1
@@ -156,6 +156,32 @@ class FireBaseManager {
 
             }
             .addOnFailureListener { }
+    }
+
+    fun getPostDetailsFromMessage(messageID: String?, callBack: KFunction1<PostData, Unit>){
+        val docRef = db.collection(messageCollection).document(messageID!!)
+        docRef.get()
+                .addOnSuccessListener { document ->
+                    val messageData: MessageData? = document.toObject(MessageData::class.java)
+                    val userDocRef = db.collection(userCollection).document(messageData!!.userID)
+                    userDocRef.get().addOnSuccessListener { userDoc ->
+                        val userData: UserData? = userDoc.toObject(UserData::class.java)
+                        callBack(PostData(
+                                userData!!.userID,
+                                userData.userName,
+                                messageData.id,
+                                userData.profilePicture,
+                                messageData.likeID,
+                                messageData.mediaContent,
+                                messageData.textContent,
+                                messageData.creationDate
+                        ))
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    // TODO: add on fail handler
+                }
+
     }
 
 

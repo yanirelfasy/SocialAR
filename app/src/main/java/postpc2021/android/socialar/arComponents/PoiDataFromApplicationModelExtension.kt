@@ -7,7 +7,7 @@ import com.wikitude.architect.ArchitectView
 import org.json.JSONArray
 import org.json.JSONObject
 import postpc2021.android.socialar.FireBaseManager
-import postpc2021.android.socialar.MessageData
+import postpc2021.android.socialar.dataTypes.MessageData
 import java.util.*
 import kotlin.collections.ArrayList
 
