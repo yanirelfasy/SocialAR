@@ -2,6 +2,7 @@ package postpc2021.android.socialar
 
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -45,6 +46,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	private var mapboxMap : MapboxMap? = null
 	private var mode = MapMode.FOG
 	private var locations = ArrayList<Pair<Double, Double>>()
+	private val fireBaseManager = FireBaseManager()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -53,7 +55,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		val addMessageButton = findViewById<AppCompatButton>(R.id.addMessage)
 		addMessageButton.setOnClickListener {
 			val intent = Intent(this, NewMessageActivity::class.java)
-			startActivity(intent)
+//			startActivity(intent)
+			val requestCode = 424242
+			startActivityForResult(intent, requestCode)
 		}
 		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
 		profileImageButton.setImageResource(R.drawable.ic_profile_light)
@@ -83,6 +87,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				setCameraTrackingMode(CameraMode.TRACKING_COMPASS)
 				changeViewButton.setImageResource(android.R.drawable.presence_offline)
 			}
+		}
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		this.onNewMessageActivityResult(requestCode, resultCode, data)
+	}
+
+	private fun onNewMessageActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+		val requestCodeVerify = 424242
+		if(requestCode == requestCodeVerify && resultCode == RESULT_OK)
+		{
+			val location = this.mapboxMap!!.locationComponent.lastKnownLocation!!
+			val userid = this.getSharedPreferences("usr_id",
+					Context.MODE_PRIVATE).getString("usr_id", "").toString()
+			val postcontent = data!!.getStringExtra("postcontent").toString()
+			val newMessageData = MessageData(userid, location.latitude, location.longitude, postcontent)
+			this.fireBaseManager.uploadMessage(newMessageData, true)
+			this.locations.add(Pair(location.latitude, location.longitude))
+
 		}
 	}
 
