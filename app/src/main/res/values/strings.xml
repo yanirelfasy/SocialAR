@@ -23,4 +23,6 @@
     <string name="title_activity_favorites_map">FavoritesMapActivity</string>
     <string name="title_activity_my_posts_map">MyPostsMapActivity</string>
     <string name="title_activity_favorites_maps">FavoritesMapsActivity</string>
+    <string name="post_title">Post Title</string>
+    <string name="post_content">Post Content</string>
 </resources>

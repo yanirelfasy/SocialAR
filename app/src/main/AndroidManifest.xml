@@ -39,7 +39,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SocialAR"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".NewMessageActivity"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:exported="true" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -51,19 +54,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-        <activity
-            android:name=".favoritesComponents.FavoritesMapsActivity"
-            android:exported="true"
-            android:label="@string/title_activity_favorites_maps" />
-        <activity
-            android:name=".myPostsComponents.MyPostsMapActivity"
-            android:exported="true"
-            android:label="@string/title_activity_my_posts_map" />
-        <activity
-            android:name=".favoritesComponents.FavoritesMapActivity"
-            android:exported="true"
-            android:label="@string/title_activity_favorites_map" />
         <activity
             android:name=".myPostsComponents.MyPostsActivity"
             android:exported="true" />
@@ -73,17 +63,11 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="true" />
-        android:theme="@style/Theme.SocialAR">
         <activity android:name=".FireBaseTest" />
-        <activity android:name=".LoginActivity">
-
-        </activity>
+        <activity android:name=".LoginActivity"></activity>
         <activity android:name=".SignInActivity" />
         <activity android:name=".ARView" />
-
-        android:theme="@style/Theme.SocialAR"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".MessageActionsActivity"></activity>
+        <activity android:name=".MessageActionsActivity" />
         <activity android:name=".MessageActionsMiddleware" />
         <activity
             android:name=".arComponents.ARView"

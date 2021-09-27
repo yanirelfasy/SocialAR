@@ -50,7 +50,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		super.onCreate(savedInstanceState)
 		supportActionBar!!.hide()
 		initializeMap(savedInstanceState)
-
+		val addMessageButton = findViewById<AppCompatButton>(R.id.addMessage)
+		addMessageButton.setOnClickListener {
+			val intent = Intent(this, NewMessageActivity::class.java)
+			startActivity(intent)
+		}
 		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
 		profileImageButton.setImageResource(R.drawable.ic_profile_light)
 		profileImageButton.setOnClickListener {
