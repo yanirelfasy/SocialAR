@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">SocialAR</string>
     <string name="mapbox_access_token">pk.eyJ1IjoieWFuaXJlbGZhc3N5IiwiYSI6ImNrc3J2OWxpYTBqNnoyb3BubmViMGdtb3cifQ.Ezo8w8GV9s36dZZtUPSRYQ</string>
+
+    <string name="facebook_application_id" translatable="false">377866297283807</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb377866297283807</string>
     <string name="wikitude_license_key">d10MzrSke3X33707J/j+/92lJAKJffrOh8+ingy2i8cGkkDLUCXkqYzF6VkzLqcFPNh4/weJqOJtI5f4+STQLiZ+QdekmLnBqoK1LeR801Qm1ot7CFhHQ+rkr409cqTk2IE1RWJvJRmNmNSVjPE4dcLcTC9vUDTi5smJFijawFRTYWx0ZWRfX9Z5U1GpBA77acgBSFJJ2gH9X5mSSWZx5tA9ZUpz9vFHPuXGnEw/VA2Y+ihmZxM1EXpjIxHUonqQ1rhGLyln0jISa//6qFoyDFLROfl9CFtDcUxxlzNHz0UZWj1kAVSMIUb3N+RqsEfQEiQ8I5lSWM8OGXL4ZhWbuO9brtQFMSilNjRI4woIgoRrGPYRGZubVd3HuydP2SoKtSEnniGZUlnlhU2eEZCaIEwsD5bn2r1AaQklNAfJMZIcFP5nJUx1a40j8brnKuYbfOTrXAjkJ5Z+6f4O8oAMUfcpiVon3UPEuDkbbIurZUs9AMCJOuVxAHE8jz2f6Xpeo7bGqhryVaIe5Rbpv2fnD3JlK/hCgC1maZ1yI93XVj3V7KEXj8Ju21iDxk6hZGp7ejQ7Ls/6QEZw6vFS6w34byJh4dXKp8DyrLi4ejbLQ7RwjvqpPXan/RVtAKlpmDSKx47wAvfyh6LHhpSHl5l0zYo1UW9KRNry5jlDUy3BcCuwYDUksb1lEY0AxdVX+Hx+rT/tLeJH9z5LSFg3lJiK7LB8IbfOJ7xIyQTIEe87BezlFlkt8ryxVBM1lubNae4dC9Ya/6xELFN8iJyOzHDnbkl0APcAsISYgyobj3G3vZKuVqMYCwCcq+X4xhjzsEzym7qXaU7Aw4FDXNf/cSnZCiYhHo37w78/pxbaVc+8Tpk=</string>
     <string name="username">userName</string>
     <string name="biography">Biography</string>

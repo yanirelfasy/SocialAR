@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "246762508518",
+    "project_id": "socialar",
+    "storage_bucket": "socialar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246762508518:android:740b36128dddf7f97e2b27",
+        "android_client_info": {
+          "package_name": "postpc2021.android.socialar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246762508518-5qn6knjbuu2jmmce727vbrv8rtdm4nus.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "postpc2021.android.socialar",
+            "certificate_hash": "94aa7032dfec1e3ce1865dcf0cccd5a8d1c2df3a"
+          }
+        },
+        {
+          "client_id": "246762508518-7gsf9m58pptvpsvhb0pqu6mfef42u75r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3ihakYVIm0QineM-5mhxapktd7BYaj-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246762508518-7gsf9m58pptvpsvhb0pqu6mfef42u75r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
