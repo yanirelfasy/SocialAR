@@ -7,7 +7,6 @@
     tools:context=".MapActivity">
 
     <FrameLayout
-        xmlns:mapbox="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -15,10 +14,10 @@
             android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            mapbox:mapbox_cameraZoom="17.17"
-            mapbox:mapbox_cameraTilt="59"
-            mapbox:mapbox_cameraZoomMax="18.02"
-            mapbox:mapbox_cameraZoomMin="15.0"
+            app:mapbox_cameraZoom="17.17"
+            app:mapbox_cameraTilt="59"
+            app:mapbox_cameraZoomMax="18.02"
+            app:mapbox_cameraZoomMin="15.0"
             />
 
         <ImageView
@@ -57,4 +56,13 @@
         android:id="@+id/changeView"
         android:background="#00000000"
         />
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintRight_toRightOf="@+id/bottomBar"
+        app:layout_constraintBottom_toBottomOf="@id/bottomBar"
+        android:id="@+id/profileButton"
+        android:background="#00000000"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

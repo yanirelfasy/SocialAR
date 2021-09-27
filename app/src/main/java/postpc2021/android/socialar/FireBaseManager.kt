@@ -29,8 +29,7 @@ class FireBaseManager {
 
     val storage = Firebase.storage
 
-    val db = FirebaseFirestore.getInstance()
-
+    var db = FirebaseFirestore.getInstance()
     /**
      * Uploads a file specified by path to the database and returns a download uri for it
      * */
