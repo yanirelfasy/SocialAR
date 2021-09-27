@@ -9,6 +9,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
+import com.mapbox.mapboxsdk.maps.MapView
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val userID = FirebaseAuth.getInstance().currentUser?.uid
-            val intent = Intent(this, FireBaseTest::class.java)
+            val intent = Intent(this, MapActivity::class.java)
             intent.putExtra("userid", userID)
             startActivity(intent)
             // ...

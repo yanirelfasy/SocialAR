@@ -3,15 +3,23 @@ package postpc2021.android.socialar.arComponents;
 import android.app.Activity;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.Message;
 
 import com.wikitude.architect.ArchitectView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import postpc2021.android.socialar.FireBaseManager;
+import postpc2021.android.socialar.MessageData;
 
 public class PoiDataFromApplicationModelExtension extends ArchitectViewExtension implements LocationListener {
+
+    private FireBaseManager fireBaseManager = new FireBaseManager();
 
 
     public PoiDataFromApplicationModelExtension(Activity activity, ArchitectView architectView) {
@@ -40,9 +48,13 @@ public class PoiDataFromApplicationModelExtension extends ArchitectViewExtension
     @Override
     public void onProviderDisabled(String provider) {}
 
-    private static JSONArray generatePoiInformation(final Location userLocation) {
+    private JSONArray generatePoiInformation(final Location userLocation) {
 
         final JSONArray pois = new JSONArray();
+//        MessageData data = new MessageData("WvjyS9iIN0c9Amn2KWFELcsMIPu1", 31.895120285543527, 35.00513086114198, "Testing Upload", new ArrayList(), new ArrayList());
+//        this.fireBaseManager.uploadMessage(data, true);
+        List<MessageData> poisData = this.fireBaseManager.getMessagesByPoIandRange(userLocation.getLatitude(), userLocation.getLongitude(), 300);
+
 
         // ensure these attributes are also used in JavaScript when extracting POI data
         final String ATTR_ID = "id";
