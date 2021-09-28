@@ -1,5 +1,6 @@
 package postpc2021.android.socialar
 
+import android.content.Context
 import android.net.Uri
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
@@ -18,18 +19,25 @@ import java.util.ArrayList
 import kotlin.reflect.KFunction1
 
 
-class FireBaseManager {
+class FireBaseManager(val context: Context) {
 
     private val userCollection = "users"
     private val messageCollection = "messages"
 
-    //TODO: Store this at a more suitable location
-    private val userID = "currentUserID"
+    private var userID = ""
 
 
     val storage = Firebase.storage
 
     var db = FirebaseFirestore.getInstance()
+
+    fun setUserID(userID: String){
+        this.userID = userID
+    }
+
+    fun getUserID(): String{
+        return this.userID
+    }
     /**
      * Uploads a file specified by path to the database and returns a download uri for it
      * */
@@ -155,6 +163,14 @@ class FireBaseManager {
 
             }
             .addOnFailureListener { }
+    }
+
+    fun getUserDetails(userID: String, callBack: KFunction1<UserData, Unit>){
+        val userDocRef = db.collection(userCollection).document(userID)
+        userDocRef.get().addOnSuccessListener { userDoc ->
+            val userData: UserData? = userDoc.toObject(UserData::class.java)
+            callBack(userData!!)
+        }
     }
 
     fun getPostDetailsFromMessage(messageID: String?, callBack: KFunction1<PostData, Unit>){

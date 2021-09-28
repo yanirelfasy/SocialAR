@@ -38,7 +38,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SocialAR"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:name=".FirebaseWrapper">
         <activity
             android:name=".NewMessageActivity"
             android:theme="@style/Theme.AppCompat.Dialog"

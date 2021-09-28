@@ -34,6 +34,7 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin
 import postpc2021.android.socialar.dataTypes.MessageData
+import postpc2021.android.socialar.dataTypes.UserData
 
 
 enum class MapMode {
@@ -47,7 +48,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	private var mapboxMap : MapboxMap? = null
 	private var mode = MapMode.FOG
 	private var locations = ArrayList<Pair<Double, Double>>()
-	private val fireBaseManager = FireBaseManager()
+	val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
+	private var userData: UserData? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -60,13 +62,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			val requestCode = 424242
 			startActivityForResult(intent, requestCode)
 		}
+		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
 		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
-		profileImageButton.setImageResource(R.drawable.ic_profile_light)
 		profileImageButton.setOnClickListener {
 			val intent = Intent(this, ProfileActivity::class.java)
 			startActivity(intent)
 		}
-		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
+		fireBaseManager.getUserDetails(fireBaseManager.getUserID(), ::setUserData)
 		changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
 		changeViewButton.setOnClickListener{ view ->
 			val fogBackground: ImageView = findViewById(R.id.fogBackground)
@@ -86,8 +88,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				mapboxMap?.setMinZoomPreference(15.0)
 				buildingPlugin!!.setVisibility(true)
 				setCameraTrackingMode(CameraMode.TRACKING_COMPASS)
-				changeViewButton.setImageResource(android.R.drawable.presence_offline)
+				changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
 			}
+		}
+	}
+
+	fun setUserData(userData: UserData){
+		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
+		if(!userData.profilePicture.isEmpty()){
+			DownloadImageTask(findViewById(R.id.profileButton))
+					.execute(userData.profilePicture);
+		}
+		else{
+			profileImageButton.setImageResource(R.drawable.ic_profile_light)
 		}
 	}
 

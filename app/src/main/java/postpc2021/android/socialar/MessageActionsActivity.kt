@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter
 
 class MessageActionsActivity : AppCompatActivity() {
 
-	val firebase: FireBaseManager = FireBaseManager();
+	val firebase = FirebaseWrapper.getInstance().fireBaseManager
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

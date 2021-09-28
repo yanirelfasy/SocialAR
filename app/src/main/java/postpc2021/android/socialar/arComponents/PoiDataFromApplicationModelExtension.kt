@@ -7,12 +7,13 @@ import com.wikitude.architect.ArchitectView
 import org.json.JSONArray
 import org.json.JSONObject
 import postpc2021.android.socialar.FireBaseManager
+import postpc2021.android.socialar.FirebaseWrapper
 import postpc2021.android.socialar.dataTypes.MessageData
 import java.util.*
 import kotlin.collections.ArrayList
 
 class PoiDataFromApplicationModelExtension(activity: Activity?, architectView: ArchitectView?) : ArchitectViewExtension(activity, architectView), LocationListener {
-	private val fireBaseManager = FireBaseManager()
+	private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
 
 	/** If the POIs were already generated and sent to JavaScript.  */
 	private var injectedPois = false
