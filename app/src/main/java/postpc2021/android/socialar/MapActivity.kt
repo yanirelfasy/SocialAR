@@ -51,10 +51,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
 	private var userData: UserData? = null
 
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		supportActionBar!!.hide()
 		initializeMap(savedInstanceState)
+
 		val addMessageButton = findViewById<AppCompatButton>(R.id.addMessage)
 		addMessageButton.setOnClickListener {
 			val intent = Intent(this, NewMessageActivity::class.java)
@@ -64,6 +66,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		}
 		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
 		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
+
+
 		profileImageButton.setOnClickListener {
 			val intent = Intent(this, ProfileActivity::class.java)
 			startActivity(intent)
@@ -118,7 +122,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 					Context.MODE_PRIVATE).getString("usr_id", "").toString()
 			val postcontent = data!!.getStringExtra("postcontent").toString()
 			val newMessageData = MessageData(userid, location.latitude, location.longitude, postcontent)
-			this.fireBaseManager.uploadMessage(newMessageData, true)
+			this.fireBaseManager.uploadMessage(newMessageData)
 			this.locations.add(Pair(location.latitude, location.longitude))
 
 		}
@@ -267,6 +271,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				// for ActivityCompat#requestPermissions for more details.
 				return
 			}
+			locationComponent.isLocationComponentEnabled = true
 			locationComponent.isLocationComponentEnabled = true
 
 			// Set the component's camera mode

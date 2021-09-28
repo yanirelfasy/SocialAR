@@ -22,10 +22,12 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateUserData(userData: UserData) {
         val profilePicture = findViewById<ImageView>(R.id.profileImageView)
+
         val userName = findViewById<TextView>(R.id.userName)
         userName.text = userData.userName
         DownloadImageTask(profilePicture)
-            .execute(userData.profilePicture);
+            .execute(userData.profilePicture)
+
 
     }
 

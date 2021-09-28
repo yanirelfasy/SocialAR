@@ -67,8 +67,7 @@
             android:name=".ProfileActivity"
             android:exported="true" />
         <activity android:name=".UserDetailsActivity" />
-        <activity android:name=".LoginActivity"></activity>
-
+        <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MessageActionsActivity" />
         <activity
