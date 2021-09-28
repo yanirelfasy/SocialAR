@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="postpc2021.android.socialar">
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -64,12 +65,11 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="true" />
-        <activity android:name=".FireBaseTest" />
+        <activity android:name=".UserDetailsActivity">
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".SignInActivity" />
-        <activity android:name=".ARView" />
         <activity android:name=".MessageActionsActivity" />
-        <activity android:name=".MessageActionsMiddleware" />
+        <activity android:name=".MessageActionsMiddleware" tools:ignore="Instantiatable"/>
         <activity
             android:name=".arComponents.ARView"
             android:configChanges="orientation|keyboardHidden|screenSize" />
@@ -82,7 +82,9 @@
             android:value="required" />
 
         <activity android:name=".MapActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
