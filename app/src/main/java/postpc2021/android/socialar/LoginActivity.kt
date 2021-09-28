@@ -4,6 +4,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -12,32 +16,70 @@ import com.google.firebase.auth.FirebaseAuth
 import com.mapbox.mapboxsdk.maps.MapView
 
 class LoginActivity : AppCompatActivity() {
-    val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
+    private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
+    lateinit var firebaseAuth: FirebaseAuth
+    lateinit var providers: List<AuthUI.IdpConfig>
+
+    private lateinit var emailEditText: EditText
+    private lateinit var passEditText: EditText
+    private lateinit var signUpText: TextView
+    private lateinit var loginButton: Button
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         init()
     }
 
-    lateinit var firebaseAuth: FirebaseAuth
-
-    //    lateinit var listener: FirebaseAuth.AuthStateListener
-    lateinit var providers: List<AuthUI.IdpConfig>
-
-
     private fun init() {
-
         firebaseAuth = FirebaseAuth.getInstance()
-        providers = arrayListOf(
-            AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build()
-        )
+        emailEditText = findViewById(R.id.loginEmailEditText)
+        passEditText = findViewById(R.id.loginPassEditText)
+        signUpText = findViewById(R.id.loginSignUPTextView)
+        loginButton = findViewById(R.id.loginButton)
 
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-        signInLauncher.launch(signInIntent)
+
+        signUpText.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            finish()
+            startActivity(intent)
+        }
+
+        loginButton.setOnClickListener {
+            val email = emailEditText.text.toString()
+            val password = passEditText.text.toString()
+
+            if (email.isNotBlank() && password.isNotBlank()) {
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val userID = firebaseAuth.currentUser?.uid
+                        fireBaseManager.setUserID(userID!!)
+                        val intent = Intent(this, MapActivity::class.java)
+                        finish()
+                        startActivity(intent)
+                    }
+                }.addOnFailureListener {
+                    Toast.makeText(applicationContext, it.localizedMessage, Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Toast.makeText(applicationContext, "Please insert a valid email and password", Toast.LENGTH_LONG).show()
+            }
+        }
+
+
+//        providers = arrayListOf(
+//            AuthUI.IdpConfig.EmailBuilder().build(),
+//            AuthUI.IdpConfig.GoogleBuilder().build()
+//        )
+//
+//        val signInIntent = AuthUI.getInstance()
+//            .createSignInIntentBuilder()
+//            .setAvailableProviders(providers)
+//            .build()
+//        signInLauncher.launch(signInIntent)
+
+
     }
 
 

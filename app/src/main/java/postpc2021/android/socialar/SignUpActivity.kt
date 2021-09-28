@@ -3,7 +3,6 @@ package postpc2021.android.socialar
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -12,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 class SignUpActivity : AppCompatActivity() {
 
+
+    private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
     private lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var emailEditText: EditText
@@ -34,23 +35,22 @@ class SignUpActivity : AppCompatActivity() {
 
         loginText.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
+            finish()
             startActivity(intent)
         }
         signUpButton.setOnClickListener {
             val email = emailEditText.text.toString()
-            val pass = passEditText.text.toString()
-
-            if (email.isNotBlank() && pass.isNotBlank()) {
-                firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
+            val password = passEditText.text.toString()
+            if (email.isNotBlank() && password.isNotBlank()) {
+                firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        val userID = firebaseAuth.currentUser?.uid
+                        fireBaseManager.setUserID(userID!!)
+                        fireBaseManager.signUpUser(::nextActivity)
                     }
-                }.addOnFailureListener { exception ->
-                    Toast.makeText(applicationContext, "Failed To signup user", Toast.LENGTH_LONG).show()
+                }.addOnFailureListener {
+                    Toast.makeText(applicationContext, "Authentication failed.", Toast.LENGTH_LONG).show()
                 }
-
             } else {
                 Toast.makeText(applicationContext, "Please insert a valid email and password", Toast.LENGTH_LONG).show()
             }
@@ -60,6 +60,14 @@ class SignUpActivity : AppCompatActivity() {
 
     }
 
+
+    private fun nextActivity() {
+//        val intent = Intent(this, UserDetailsActivity::class.java)
+        // TODO: uncomment and remove the next line
+        val intent = Intent(this, MapActivity::class.java)
+        finish()
+        startActivity(intent)
+    }
 
 
 }

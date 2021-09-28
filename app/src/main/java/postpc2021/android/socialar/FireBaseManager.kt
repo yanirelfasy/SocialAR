@@ -21,6 +21,8 @@ import kotlin.reflect.KFunction1
 
 class FireBaseManager(val context: Context) {
 
+
+    private val userIDField = "userID"
     private val userCollection = "users"
     private val messageCollection = "messages"
 
@@ -210,10 +212,15 @@ class FireBaseManager(val context: Context) {
         }
     }
 
-    fun getUserDoc() :DocumentReference{
+    fun getUserDoc(): DocumentReference {
         return db.collection(userCollection).document(userID)
     }
 
+    fun signUpUser(callBack: () -> Unit) {
+        if (userID.isNotBlank()) {
+            db.collection(userCollection).document(userID).set(hashMapOf(userID to userIDField)).addOnSuccessListener { callBack() }
+        }
+    }
 
 
 }
