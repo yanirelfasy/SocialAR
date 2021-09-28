@@ -62,9 +62,7 @@ class SignUpActivity : AppCompatActivity() {
 
 
     private fun nextActivity() {
-//        val intent = Intent(this, UserDetailsActivity::class.java)
-        // TODO: uncomment and remove the next line
-        val intent = Intent(this, MapActivity::class.java)
+        val intent = Intent(this, UserDetailsActivity::class.java)
         finish()
         startActivity(intent)
     }
