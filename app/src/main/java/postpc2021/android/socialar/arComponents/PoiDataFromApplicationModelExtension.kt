@@ -43,17 +43,18 @@ class PoiDataFromApplicationModelExtension(activity: Activity?, architectView: A
 		val USER_ID = "userID"
 		val CREATION_DATE = "creationDate"
 		val MEDIA = "mediaContent"
+		if(!injectedPois){
+			for (message in messages){
+				val poiInformation = HashMap<String?, String?>()
+				poiInformation[ATTR_ID] = message.id
+				poiInformation[ATTR_LATITUDE] = message.latitude.toString()
+				poiInformation[ATTR_LONGITUDE] = message.longitude.toString()
+				poiInformation[ATTR_ALTITUDE] = USER_HEIGHT.toString()
+				pois.put(JSONObject(poiInformation as Map<*, *>))
+			}
 
-		for (message in messages){
-			val poiInformation = HashMap<String?, String?>()
-			poiInformation[ATTR_ID] = message.id
-			poiInformation[ATTR_LATITUDE] = message.latitude.toString()
-			poiInformation[ATTR_LONGITUDE] = message.longitude.toString()
-			poiInformation[ATTR_ALTITUDE] = USER_HEIGHT.toString()
-			pois.put(JSONObject(poiInformation as Map<*, *>))
+			architectView.callJavascript("World.loadPoisFromJsonData($pois)") // Triggers the loadPoisFromJsonData function
+			injectedPois = true // don't load pois again
 		}
-
-		architectView.callJavascript("World.loadPoisFromJsonData($pois)") // Triggers the loadPoisFromJsonData function
-		injectedPois = true // don't load pois again
 	}
 }
