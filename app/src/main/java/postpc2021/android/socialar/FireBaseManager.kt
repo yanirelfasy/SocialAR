@@ -2,7 +2,6 @@ package postpc2021.android.socialar
 
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryBounds
@@ -22,6 +21,8 @@ import kotlin.reflect.KFunction1
 
 class FireBaseManager(val context: Context) {
 
+
+    private val userIDField = "userID"
     private val userCollection = "users"
     private val messageCollection = "messages"
 
@@ -208,6 +209,16 @@ class FireBaseManager(val context: Context) {
         val userRef = db.collection(userCollection).document(userID)
         userRef.set(userData, SetOptions.merge()).addOnSuccessListener {
             callBack()
+        }
+    }
+
+    fun getUserDoc(): DocumentReference {
+        return db.collection(userCollection).document(userID)
+    }
+
+    fun signUpUser(callBack: () -> Unit) {
+        if (userID.isNotBlank()) {
+            db.collection(userCollection).document(userID).set(hashMapOf(userID to userIDField)).addOnSuccessListener { callBack() }
         }
     }
 
