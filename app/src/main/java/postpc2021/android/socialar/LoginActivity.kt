@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.mapbox.mapboxsdk.maps.MapView
 
 class LoginActivity : AppCompatActivity() {
+    val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -49,7 +50,8 @@ class LoginActivity : AppCompatActivity() {
             // Successfully signed in
             val userID = FirebaseAuth.getInstance().currentUser?.uid
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("userid", userID)
+            fireBaseManager.setUserID(userID!!)
+//            intent.putExtra("userid", userID)
             startActivity(intent)
             // ...
         } else {

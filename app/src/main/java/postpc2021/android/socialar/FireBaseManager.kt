@@ -1,35 +1,43 @@
 package postpc2021.android.socialar
 
+import android.content.Context
 import android.net.Uri
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryBounds
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import postpc2021.android.socialar.dataTypes.MessageData
+import postpc2021.android.socialar.dataTypes.PostData
+import postpc2021.android.socialar.dataTypes.UserData
 import java.io.File
 import java.util.ArrayList
+import kotlin.reflect.KFunction1
 
 
-class FireBaseManager {
+class FireBaseManager(val context: Context) {
 
     private val userCollection = "users"
     private val messageCollection = "messages"
 
-    //TODO: Store this at a more suitable location
-    private val userID = "currentUserID"
+    private var userID = ""
 
 
     val storage = Firebase.storage
 
-    val db = FirebaseFirestore.getInstance()
+    var db = FirebaseFirestore.getInstance()
 
+    fun setUserID(userID: String){
+        this.userID = userID
+    }
+
+    fun getUserID(): String{
+        return this.userID
+    }
     /**
      * Uploads a file specified by path to the database and returns a download uri for it
      * */
@@ -93,8 +101,8 @@ class FireBaseManager {
     /**
      * Given a point of interest (latitude, longitude) and a radius in meters, returns a list of all messages within that range
      * */
-    fun getMessagesByPoIandRange(latitude: Double, longitude: Double, radiusInMeters: Double): List<MessageData> {
-        val messages = mutableListOf<MessageData>()
+    fun getMessagesByPoIandRange(latitude: Double, longitude: Double, radiusInMeters: Double, onDone: KFunction1<ArrayList<MessageData>, Unit>){
+        val messages = ArrayList<MessageData>()
         val center = GeoLocation(latitude, longitude)
 
 
@@ -110,22 +118,23 @@ class FireBaseManager {
             tasks.add(query.get())
         }
         // Once complete, get rid of false positives while aggregating the matching results in the list
-        Tasks.whenAllComplete(tasks).addOnCompleteListener {
-            for (task: Task<QuerySnapshot> in tasks) {
-                val snapshot: QuerySnapshot = task.result
-                for (doc: DocumentSnapshot in snapshot.documents) {
-                    val lat: Double = doc.getDouble("latitude")!!
-                    val lng: Double = doc.getDouble("longitude")!!
-                    val docloc = GeoLocation(lat, lng)
-                    val distanceInMeters: Double = GeoFireUtils.getDistanceBetween(docloc, center)
-                    if (distanceInMeters <= radiusInMeters) {
-                        messages.add(doc.toObject(MessageData::class.java)!!)
+        Tasks.whenAllComplete(tasks).addOnCompleteListener{
+            it.addOnCompleteListener{
+                for (task: Task<QuerySnapshot> in tasks) {
+                    val snapshot: QuerySnapshot = task.result
+                    for (doc: DocumentSnapshot in snapshot.documents) {
+                        val lat: Double = doc.getDouble("latitude")!!
+                        val lng: Double = doc.getDouble("longitude")!!
+                        val docloc = GeoLocation(lat, lng)
+                        val distanceInMeters: Double = GeoFireUtils.getDistanceBetween(docloc, center)
+                        if (distanceInMeters <= radiusInMeters) {
+                            messages.add(doc.toObject(MessageData::class.java)!!)
+                        }
                     }
                 }
-
+                onDone(messages)
             }
         }
-        return messages
     }
 
     /**
@@ -154,6 +163,40 @@ class FireBaseManager {
 
             }
             .addOnFailureListener { }
+    }
+
+    fun getUserDetails(userID: String, callBack: KFunction1<UserData, Unit>){
+        val userDocRef = db.collection(userCollection).document(userID)
+        userDocRef.get().addOnSuccessListener { userDoc ->
+            val userData: UserData? = userDoc.toObject(UserData::class.java)
+            callBack(userData!!)
+        }
+    }
+
+    fun getPostDetailsFromMessage(messageID: String?, callBack: KFunction1<PostData, Unit>){
+        val docRef = db.collection(messageCollection).document(messageID!!)
+        docRef.get()
+                .addOnSuccessListener { document ->
+                    val messageData: MessageData? = document.toObject(MessageData::class.java)
+                    val userDocRef = db.collection(userCollection).document(messageData!!.userID)
+                    userDocRef.get().addOnSuccessListener { userDoc ->
+                        val userData: UserData? = userDoc.toObject(UserData::class.java)
+                        callBack(PostData(
+                                userData!!.userID,
+                                userData.userName,
+                                messageData.id,
+                                userData.profilePicture,
+                                messageData.likeID,
+                                messageData.mediaContent,
+                                messageData.textContent,
+                                messageData.creationDate
+                        ))
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    // TODO: add on fail handler
+                }
+
     }
 
 

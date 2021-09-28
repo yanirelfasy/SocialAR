@@ -39,18 +39,19 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:id="@+id/profilePicture"/>
 
         </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         app:layout_constraintTop_toTopOf="@+id/messageHeader"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toEndOf="@+id/imageContainer"
+        app:layout_constraintLeft_toRightOf="@+id/imageContainer"
         android:layout_marginStart="5dp"
         android:text="TEXT1"
         android:textSize="14dp"
@@ -58,12 +59,20 @@
         android:id="@+id/userName"
         />
 
-    <TextView
-        android:layout_width="80dp"
+    <View
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="@+id/messageHeader"
+        android:background="#DCDCDC"
+        app:layout_constraintTop_toBottomOf="@+id/userName"
+        android:id="@+id/subline"
+        />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/subline"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toEndOf="@+id/userName"
+        app:layout_constraintLeft_toRightOf="@+id/imageContainer"
         android:layout_marginStart="5dp"
         android:text="TEXT2"
         android:textSize="14dp"
@@ -72,17 +81,18 @@
         />
 
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="@+id/messageHeader"
+        app:layout_constraintBottom_toBottomOf="@+id/subline"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toEndOf="@+id/likes"
+        app:layout_constraintLeft_toRightOf="@+id/likes"
         android:layout_marginStart="5dp"
         android:text="TEXT3"
         android:textSize="14dp"
         android:gravity="center"
         android:id="@+id/date"
         />
+
 
 
 

@@ -2,6 +2,8 @@ package postpc2021.android.socialar
 
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -10,10 +12,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
@@ -29,6 +33,8 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin
+import postpc2021.android.socialar.dataTypes.MessageData
+import postpc2021.android.socialar.dataTypes.UserData
 
 
 enum class MapMode {
@@ -41,13 +47,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	private var permissionsManager: PermissionsManager? = null
 	private var mapboxMap : MapboxMap? = null
 	private var mode = MapMode.FOG
+	private var locations = ArrayList<Pair<Double, Double>>()
+	val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
+	private var userData: UserData? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		supportActionBar!!.hide()
 		initializeMap(savedInstanceState)
-
+		val addMessageButton = findViewById<AppCompatButton>(R.id.addMessage)
+		addMessageButton.setOnClickListener {
+			val intent = Intent(this, NewMessageActivity::class.java)
+//			startActivity(intent)
+			val requestCode = 424242
+			startActivityForResult(intent, requestCode)
+		}
 		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
+		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
+		profileImageButton.setOnClickListener {
+			val intent = Intent(this, ProfileActivity::class.java)
+			startActivity(intent)
+		}
+		fireBaseManager.getUserDetails(fireBaseManager.getUserID(), ::setUserData)
 		changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
 		changeViewButton.setOnClickListener{ view ->
 			val fogBackground: ImageView = findViewById(R.id.fogBackground)
@@ -69,6 +90,65 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 				setCameraTrackingMode(CameraMode.TRACKING_COMPASS)
 				changeViewButton.setImageResource(android.R.drawable.ic_menu_search)
 			}
+		}
+	}
+
+	fun setUserData(userData: UserData){
+		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
+		if(!userData.profilePicture.isEmpty()){
+			DownloadImageTask(findViewById(R.id.profileButton))
+					.execute(userData.profilePicture);
+		}
+		else{
+			profileImageButton.setImageResource(R.drawable.ic_profile_light)
+		}
+	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		this.onNewMessageActivityResult(requestCode, resultCode, data)
+	}
+
+	private fun onNewMessageActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+		val requestCodeVerify = 424242
+		if(requestCode == requestCodeVerify && resultCode == RESULT_OK)
+		{
+			val location = this.mapboxMap!!.locationComponent.lastKnownLocation!!
+			val userid = this.getSharedPreferences("usr_id",
+					Context.MODE_PRIVATE).getString("usr_id", "").toString()
+			val postcontent = data!!.getStringExtra("postcontent").toString()
+			val newMessageData = MessageData(userid, location.latitude, location.longitude, postcontent)
+			this.fireBaseManager.uploadMessage(newMessageData, true)
+			this.locations.add(Pair(location.latitude, location.longitude))
+
+		}
+	}
+
+	private fun getLocationsFromExtras()
+	{
+		val extras = intent.extras
+		if(extras != null)
+		{
+			val favorites = extras.get("favorites")
+			val myPosts = extras.get("myPosts")
+			if(favorites != null)
+			{
+				this.locations = favorites as ArrayList<Pair<Double, Double>>
+
+			}
+			else if(myPosts != null)
+			{
+				this.locations = myPosts as ArrayList<Pair<Double, Double>>
+			}
+			else
+			{
+				return
+			}
+			val changeViewButton = findViewById<ImageButton>(R.id.changeView)
+			changeViewButton.performClick()
+			findViewById<ImageButton>(R.id.profileButton).visibility = View.GONE
+			changeViewButton.visibility = View.GONE
+			findViewById<AppCompatButton>(R.id.addMessage).visibility = View.GONE
 		}
 	}
 
@@ -122,6 +202,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			enableLocationComponent(style)
 //			val uiSettings = mapboxMap.uiSettings
 //			uiSettings.isCompassEnabled = false
+			getLocationsFromExtras()
 			drawMarkersInMap(style)
 		}
 	}
@@ -129,14 +210,32 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	private fun drawMarkersInMap(style: Style){
 		// Create symbol manager object.
 		val symbolManager = SymbolManager(mapView!!, mapboxMap!!, style);
+		var averagedLongitude = 0.0
+		var averagedLatitude = 0.0
+		var symbol: SymbolOptions
 		symbolManager.iconAllowOverlap = true;
 		symbolManager.textAllowOverlap = true;
 		// Create a symbol at the specified location.
-		val symbol: SymbolOptions = SymbolOptions()
-				.withLatLng(LatLng(32.687337, 84.381457))
-				.withIconImage("marker")
-				.withIconSize(1.3f)
-		symbolManager.create(symbol)
+		for(location: Pair<Double, Double> in this.locations)
+		{
+			averagedLongitude += location.first
+			averagedLatitude += location.second
+			symbol = SymbolOptions()
+					.withLatLng(LatLng(location.first, location.second))
+					.withIconImage("marker")
+					.withIconSize(1.3f)
+			symbolManager.create(symbol)
+		}
+		if(this.locations.size > 0)
+		{
+			val position = CameraPosition.Builder()
+					.target(LatLng(averagedLatitude/this.locations.size,
+							averagedLongitude/this.locations.size))
+					.zoom(8.0)
+					.tilt(0.0)
+					.build()
+			this.mapboxMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(position))
+		}
 	}
 
 	private fun enableLocationComponent(loadedMapStyle: Style) {
