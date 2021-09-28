@@ -8,10 +8,10 @@ import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import java.util.*
-
 
 class UserDetailsActivity : AppCompatActivity() {
 
@@ -78,7 +78,6 @@ class UserDetailsActivity : AppCompatActivity() {
 
 
     private fun setupProfilePicture() {
-        pr
         profilePicView.setOnClickListener {
             openGallery()
         }

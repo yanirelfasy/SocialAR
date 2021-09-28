@@ -13,8 +13,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Enter Birthday"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:minHeight="48dp"
 
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nameText" />
 
@@ -24,6 +25,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Enter Name"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
