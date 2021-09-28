@@ -13,7 +13,7 @@ data class UserData(
 		val userID: String = "",
 		val userName: String = "",
 		val profilePicture: String = "",
-		val dateOfBith: String = "",
+		val dateOfBirth: String = "",
 		val joinDate: String = "",
 		val messages: ArrayList<String> = ArrayList()
 ) : Serializable {

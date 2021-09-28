@@ -11,7 +11,9 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import postpc2021.android.socialar.dataTypes.UserData
 import java.util.*
+import kotlin.collections.ArrayList
 
 class UserDetailsActivity : AppCompatActivity() {
 
@@ -49,9 +51,13 @@ class UserDetailsActivity : AppCompatActivity() {
             // Check the following:
             // Name is not blank
             // Birthday is not blank
-            //
-            if (nameText.text.isNotBlank() && birthdayText.text.isNotBlank()) {
+            // Profile pic uri is not empty
+            if (nameText.text.isNotBlank() && birthdayText.text.isNotBlank() && profilePicUri.isNotBlank() && joinDate.isNotBlank()) {
+
                 birthdayDate = birthdayText.text.toString()
+                val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
+                val userData = UserData(fireBaseManager.getUserID(), nameText.text.toString(), profilePicUri, birthdayDate, joinDate, ArrayList())
+                fireBaseManager.updateUserDetails(userData)
                 val intent = Intent(this, MapActivity::class.java)
                 finish()
                 startActivity(intent)
@@ -98,6 +104,7 @@ class UserDetailsActivity : AppCompatActivity() {
             if (requestCode == PICK_IMAGE) {
                 val imageUri: Uri? = data?.data
                 if (imageUri != null) {
+                    profilePicUri = imageUri.toString()
                     profilePicView.setImageURI(imageUri)
                 }
             }

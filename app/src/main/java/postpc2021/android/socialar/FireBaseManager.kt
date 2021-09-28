@@ -2,6 +2,7 @@ package postpc2021.android.socialar
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryBounds
@@ -31,13 +32,14 @@ class FireBaseManager(val context: Context) {
 
     var db = FirebaseFirestore.getInstance()
 
-    fun setUserID(userID: String){
+    fun setUserID(userID: String) {
         this.userID = userID
     }
 
-    fun getUserID(): String{
+    fun getUserID(): String {
         return this.userID
     }
+
     /**
      * Uploads a file specified by path to the database and returns a download uri for it
      * */
@@ -101,7 +103,7 @@ class FireBaseManager(val context: Context) {
     /**
      * Given a point of interest (latitude, longitude) and a radius in meters, returns a list of all messages within that range
      * */
-    fun getMessagesByPoIandRange(latitude: Double, longitude: Double, radiusInMeters: Double, onDone: KFunction1<ArrayList<MessageData>, Unit>){
+    fun getMessagesByPoIandRange(latitude: Double, longitude: Double, radiusInMeters: Double, onDone: KFunction1<ArrayList<MessageData>, Unit>) {
         val messages = ArrayList<MessageData>()
         val center = GeoLocation(latitude, longitude)
 
@@ -118,8 +120,8 @@ class FireBaseManager(val context: Context) {
             tasks.add(query.get())
         }
         // Once complete, get rid of false positives while aggregating the matching results in the list
-        Tasks.whenAllComplete(tasks).addOnCompleteListener{
-            it.addOnCompleteListener{
+        Tasks.whenAllComplete(tasks).addOnCompleteListener {
+            it.addOnCompleteListener {
                 for (task: Task<QuerySnapshot> in tasks) {
                     val snapshot: QuerySnapshot = task.result
                     for (doc: DocumentSnapshot in snapshot.documents) {
@@ -148,11 +150,11 @@ class FireBaseManager(val context: Context) {
     /**
      *
      * */
-    fun uploadMessage(messageData: MessageData, hasDLuris : Boolean = false) {
+    fun uploadMessage(messageData: MessageData, hasDLuris: Boolean = false) {
         // If media has not yet been uploaded
         // If media in the message contains photo file locations and not download uris
-        if (!hasDLuris){
-             messageData.mediaContent = uploadPhotos(messageData.mediaContent, messageData.id)
+        if (!hasDLuris) {
+            messageData.mediaContent = uploadPhotos(messageData.mediaContent, messageData.id)
         }
 
         db.collection(messageCollection).document(messageData.id).set(messageData)
@@ -165,7 +167,7 @@ class FireBaseManager(val context: Context) {
             .addOnFailureListener { }
     }
 
-    fun getUserDetails(userID: String, callBack: KFunction1<UserData, Unit>){
+    fun getUserDetails(userID: String, callBack: KFunction1<UserData, Unit>) {
         val userDocRef = db.collection(userCollection).document(userID)
         userDocRef.get().addOnSuccessListener { userDoc ->
             val userData: UserData? = userDoc.toObject(UserData::class.java)
@@ -173,30 +175,38 @@ class FireBaseManager(val context: Context) {
         }
     }
 
-    fun getPostDetailsFromMessage(messageID: String?, callBack: KFunction1<PostData, Unit>){
+    fun getPostDetailsFromMessage(messageID: String?, callBack: KFunction1<PostData, Unit>) {
         val docRef = db.collection(messageCollection).document(messageID!!)
         docRef.get()
-                .addOnSuccessListener { document ->
-                    val messageData: MessageData? = document.toObject(MessageData::class.java)
-                    val userDocRef = db.collection(userCollection).document(messageData!!.userID)
-                    userDocRef.get().addOnSuccessListener { userDoc ->
-                        val userData: UserData? = userDoc.toObject(UserData::class.java)
-                        callBack(PostData(
-                                userData!!.userID,
-                                userData.userName,
-                                messageData.id,
-                                userData.profilePicture,
-                                messageData.likeID,
-                                messageData.mediaContent,
-                                messageData.textContent,
-                                messageData.creationDate
-                        ))
-                    }
+            .addOnSuccessListener { document ->
+                val messageData: MessageData? = document.toObject(MessageData::class.java)
+                val userDocRef = db.collection(userCollection).document(messageData!!.userID)
+                userDocRef.get().addOnSuccessListener { userDoc ->
+                    val userData: UserData? = userDoc.toObject(UserData::class.java)
+                    callBack(
+                        PostData(
+                            userData!!.userID,
+                            userData.userName,
+                            messageData.id,
+                            userData.profilePicture,
+                            messageData.likeID,
+                            messageData.mediaContent,
+                            messageData.textContent,
+                            messageData.creationDate
+                        )
+                    )
                 }
-                .addOnFailureListener { exception ->
-                    // TODO: add on fail handler
-                }
+            }
+            .addOnFailureListener { exception ->
+                // TODO: add on fail handler
+            }
 
+    }
+
+
+    fun updateUserDetails(userData: UserData) {
+        val userRef = db.collection(userCollection).document(userID)
+        userRef.set(userData, SetOptions.merge())
     }
 
 
