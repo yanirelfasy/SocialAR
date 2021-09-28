@@ -35,6 +35,7 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin
+import postpc2021.android.socialar.arComponents.ARView
 import postpc2021.android.socialar.dataTypes.MessageData
 import postpc2021.android.socialar.dataTypes.UserData
 
@@ -66,8 +67,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		}
 		val changeViewButton = findViewById<ImageButton>(R.id.changeView)
 		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
+		val arImageButton = findViewById<ImageButton>(R.id.arView)
 		profileImageButton.setOnClickListener {
 			val intent = Intent(this, ProfileActivity::class.java)
+			startActivity(intent)
+		}
+		arImageButton.setImageResource(android.R.drawable.ic_menu_camera)
+		arImageButton.setOnClickListener {
+			val intent = Intent(this, ARView::class.java)
 			startActivity(intent)
 		}
 		fireBaseManager.getUserDetails(fireBaseManager.getUserID(), ::setUserData)
