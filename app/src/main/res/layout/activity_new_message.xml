@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewMessageActivity">
+    tools:context=".NewMessageActivity"
+    android:background="@color/cardview_dark_background">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/postContentEditText"
@@ -82,7 +83,7 @@
         android:id="@+id/imageView"
         android:layout_width="93dp"
         android:layout_height="74dp"
-        android:src="@drawable/ic_new_post_light"
+        android:src="@drawable/ic_new_post_very_light"
         app:layout_constraintBottom_toTopOf="@+id/postTitleEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

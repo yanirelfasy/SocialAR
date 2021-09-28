@@ -14,6 +14,7 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.mapbox.mapboxsdk.maps.MapView
+import postpc2021.android.socialar.arComponents.ARView
 
 class LoginActivity : AppCompatActivity() {
     private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
