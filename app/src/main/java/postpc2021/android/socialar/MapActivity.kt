@@ -14,8 +14,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
+import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -47,7 +49,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 	private var permissionsManager: PermissionsManager? = null
 	private var mapboxMap : MapboxMap? = null
 	private var mode = MapMode.FOG
-	private var locations = ArrayList<Pair<Double, Double>>()
+	private var locations = ArrayList<MessageData>()
 	val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
 	private var userData: UserData? = null
 
@@ -119,7 +121,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			val postcontent = data!!.getStringExtra("postcontent").toString()
 			val newMessageData = MessageData(userid, location.latitude, location.longitude, postcontent)
 			this.fireBaseManager.uploadMessage(newMessageData, true)
-			this.locations.add(Pair(location.latitude, location.longitude))
+			this.locations.add(newMessageData)
 
 		}
 	}
@@ -131,19 +133,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		{
 			val favorites = extras.get("favorites")
 			val myPosts = extras.get("myPosts")
-			if(favorites != null)
-			{
-				this.locations = favorites as ArrayList<Pair<Double, Double>>
-
-			}
-			else if(myPosts != null)
-			{
-				this.locations = myPosts as ArrayList<Pair<Double, Double>>
-			}
-			else
-			{
-				return
-			}
+//			if(favorites != null)
+//			{
+//				this.locations = favorites as ArrayList<MessageData>
+//
+//			}
+//			else if(myPosts != null)
+//			{
+//				this.locations = myPosts as ArrayList<MessageData>
+//			}
+//			else
+//			{
+//				return
+//			}
 			val changeViewButton = findViewById<ImageButton>(R.id.changeView)
 			changeViewButton.performClick()
 			findViewById<ImageButton>(R.id.profileButton).visibility = View.GONE
@@ -200,42 +202,60 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 					BitmapFactory.decodeResource(this.getResources(), R.drawable.mapbox_marker_icon_default)
 			);
 			enableLocationComponent(style)
-//			val uiSettings = mapboxMap.uiSettings
-//			uiSettings.isCompassEnabled = false
+			val uiSettings = mapboxMap.uiSettings
+			uiSettings.isCompassEnabled = false
 			getLocationsFromExtras()
-			drawMarkersInMap(style)
+			val locationComponent = this.mapboxMap!!.locationComponent
+			val symbolManager = SymbolManager(mapView!!, mapboxMap, style);
+			symbolManager.iconAllowOverlap = true;
+			symbolManager.textAllowOverlap = true;
+			fireBaseManager.setMessagesAroundView(locationComponent.lastKnownLocation!!.latitude, locationComponent.lastKnownLocation!!.longitude)
+			fireBaseManager.messagesAroundViewLiveDataPublic.observe(this, Observer {
+				drawMarkersInMap(symbolManager)
+			})
 		}
+		val that = this
+		mapboxMap.addOnMoveListener(object : MapboxMap.OnMoveListener {
+			override fun onMoveBegin(detector: MoveGestureDetector) {
+			}
+
+			override fun onMove(detector: MoveGestureDetector) {
+			}
+
+			override fun onMoveEnd(detector: MoveGestureDetector) {
+				fireBaseManager.setMessagesAroundView(mapboxMap.cameraPosition.target.latitude, mapboxMap.cameraPosition.target.longitude)
+			}
+		})
 	}
 
-	private fun drawMarkersInMap(style: Style){
+	private fun drawMarkersInMap(symbolManager: SymbolManager){
 		// Create symbol manager object.
-		val symbolManager = SymbolManager(mapView!!, mapboxMap!!, style);
 		var averagedLongitude = 0.0
 		var averagedLatitude = 0.0
 		var symbol: SymbolOptions
-		symbolManager.iconAllowOverlap = true;
-		symbolManager.textAllowOverlap = true;
+		this.locations = fireBaseManager.getMessagesAroundView() as ArrayList<MessageData>
+		symbolManager.deleteAll()
 		// Create a symbol at the specified location.
-		for(location: Pair<Double, Double> in this.locations)
+		for(location: MessageData in this.locations)
 		{
-			averagedLongitude += location.first
-			averagedLatitude += location.second
+//			averagedLongitude += location.longitude
+//			averagedLatitude += location.latitude
 			symbol = SymbolOptions()
-					.withLatLng(LatLng(location.first, location.second))
+					.withLatLng(LatLng(location.latitude, location.longitude))
 					.withIconImage("marker")
 					.withIconSize(1.3f)
 			symbolManager.create(symbol)
 		}
-		if(this.locations.size > 0)
-		{
-			val position = CameraPosition.Builder()
-					.target(LatLng(averagedLatitude/this.locations.size,
-							averagedLongitude/this.locations.size))
-					.zoom(8.0)
-					.tilt(0.0)
-					.build()
-			this.mapboxMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(position))
-		}
+//		if(this.locations.size > 0)
+//		{
+//			val position = CameraPosition.Builder()
+//					.target(LatLng(averagedLatitude/this.locations.size,
+//							averagedLongitude/this.locations.size))
+//					.zoom(8.0)
+//					.tilt(0.0)
+//					.build()
+//			this.mapboxMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(position))
+//		}
 	}
 
 	private fun enableLocationComponent(loadedMapStyle: Style) {
