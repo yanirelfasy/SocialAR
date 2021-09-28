@@ -53,16 +53,19 @@ class UserDetailsActivity : AppCompatActivity() {
             // Birthday is not blank
             // Profile pic uri is not empty
             if (nameText.text.isNotBlank() && birthdayText.text.isNotBlank() && profilePicUri.isNotBlank() && joinDate.isNotBlank()) {
-
                 birthdayDate = birthdayText.text.toString()
                 val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
                 val userData = UserData(fireBaseManager.getUserID(), nameText.text.toString(), profilePicUri, birthdayDate, joinDate, ArrayList())
-                fireBaseManager.updateUserDetails(userData)
-                val intent = Intent(this, MapActivity::class.java)
-                finish()
-                startActivity(intent)
+                fireBaseManager.updateUserDetails(userData) { startNextActivity() }
+
             }
         }
+    }
+
+    private fun startNextActivity() {
+        val intent = Intent(this, MapActivity::class.java)
+        finish()
+        startActivity(intent)
     }
 
 

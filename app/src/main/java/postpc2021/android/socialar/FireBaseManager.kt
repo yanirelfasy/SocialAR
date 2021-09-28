@@ -204,9 +204,11 @@ class FireBaseManager(val context: Context) {
     }
 
 
-    fun updateUserDetails(userData: UserData) {
+    fun updateUserDetails(userData: UserData, callBack: () -> Unit) {
         val userRef = db.collection(userCollection).document(userID)
-        userRef.set(userData, SetOptions.merge())
+        userRef.set(userData, SetOptions.merge()).addOnSuccessListener {
+            callBack()
+        }
     }
 
 
