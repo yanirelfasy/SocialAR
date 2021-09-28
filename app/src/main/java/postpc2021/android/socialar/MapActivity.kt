@@ -61,7 +61,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		val addMessageButton = findViewById<AppCompatButton>(R.id.addMessage)
 		addMessageButton.setOnClickListener {
 			val intent = Intent(this, NewMessageActivity::class.java)
-//			startActivity(intent)
 			val requestCode = 424242
 			startActivityForResult(intent, requestCode)
 		}
@@ -123,8 +122,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		if(requestCode == requestCodeVerify && resultCode == RESULT_OK)
 		{
 			val location = this.mapboxMap!!.locationComponent.lastKnownLocation!!
-			val userid = this.getSharedPreferences("usr_id",
-					Context.MODE_PRIVATE).getString("usr_id", "").toString()
+			val userid = this.fireBaseManager.getUserID()
 			val postcontent = data!!.getStringExtra("postcontent").toString()
 			val newMessageData = MessageData(userid, location.latitude, location.longitude, postcontent)
 			this.fireBaseManager.uploadMessage(newMessageData, true)

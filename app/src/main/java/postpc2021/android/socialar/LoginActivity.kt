@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val userID = firebaseAuth.currentUser?.uid
                         fireBaseManager.setUserID(userID!!)
-                        val intent = Intent(this, MapActivity::class.java)
+                        val intent = Intent(this, ARView::class.java)
                         finish()
                         startActivity(intent)
                     }
