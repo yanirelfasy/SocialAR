@@ -49,10 +49,8 @@ class LoginActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val userID = FirebaseAuth.getInstance().currentUser?.uid
-            val intent = Intent(this, MapActivity::class.java)
             fireBaseManager.setUserID(userID!!)
-//            intent.putExtra("userid", userID)
-            startActivity(intent)
+            setupUser()
             // ...
         } else {
             // Sign in failed. If response is null the user canceled the
@@ -63,42 +61,31 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    fun emailLink() {
-        val actionCodeSettings = ActionCodeSettings.newBuilder()
-            .setAndroidPackageName(
-                "postpc2021.android.socialar",
-                true,
-                null
-            )
-            .setHandleCodeInApp(true)
-            .setUrl("https://google.com")
-            .build()
-
-        val providers = listOf(
-            AuthUI.IdpConfig.EmailBuilder()
-                .enableEmailLinkSignIn()
-                .setActionCodeSettings(actionCodeSettings)
-                .build()
-        )
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-        signInLauncher.launch(signInIntent)
-
+    private fun setupUser() {
+        val userRef = fireBaseManager.getUserDoc()
+        userRef.get().addOnSuccessListener { document ->
+            // Case: User exists
+            if (document != null) {
+                signedIn()
+            }// Case: User does not yet exist in database
+            else {
+                userRef.set(hashMapOf(fireBaseManager.getUserID() to "userID"))
+                signUp()
+            }
+        }
     }
 
 
-    override fun onStart() {
-        super.onStart()
-//        firebaseAuth.addAuthStateListener(listener)
+    private fun signedIn() {
+        val intent = Intent(this, MapActivity::class.java)
+        finish()
+        startActivity(intent)
     }
 
-    override fun onStop() {
-//        if (listener != null) {
-//            firebaseAuth.removeAuthStateListener(listener)
-//        }
-        super.onStop()
+    private fun signUp() {
+//        val intent = Intent(this, UserDetailsActivity::class.java)
+        finish()
+        startActivity(intent)
     }
 
 
