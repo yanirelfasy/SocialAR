@@ -56,7 +56,7 @@ class UserDetailsActivity : AppCompatActivity() {
                 birthdayDate = birthdayText.text.toString()
                 val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
                 val userData = UserData(fireBaseManager.getUserID(), nameText.text.toString(), profilePicUri, birthdayDate, joinDate, ArrayList())
-                fireBaseManager.updateUserDetails(userData) { startNextActivity() }
+                fireBaseManager.updateUserDetails(userData, ::startNextActivity)
 
             }
         }
