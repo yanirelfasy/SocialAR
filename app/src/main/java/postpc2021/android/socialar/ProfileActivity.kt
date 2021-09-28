@@ -7,18 +7,28 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.firebase.ui.auth.AuthUI
+import postpc2021.android.socialar.dataTypes.UserData
 import postpc2021.android.socialar.favoritesComponents.FavoritesActivity
 import postpc2021.android.socialar.myPostsComponents.MyPostsActivity
 
 class ProfileActivity : AppCompatActivity() {
+
+    val firebase: FireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
     private fun initFromSP() {
         this.title = "Profile"
-        /// TODO: get profile data from the device or from firebase
-        val profilePicture = findViewById<ImageView>(R.id.profileImageView)
-        profilePicture.setImageResource(R.drawable.profile)  /// TODO:: pull image from firestore and update here
-        val userName = findViewById<TextView>(R.id.userName)
-        userName.text = "Pablo Escobar" /// TODO: pull username from firestore
+        firebase.getUserDetails(firebase.getUserID(), ::updateUserData)
     }
+
+    private fun updateUserData(userData: UserData) {
+        val profilePicture = findViewById<ImageView>(R.id.profileImageView)
+        val userName = findViewById<TextView>(R.id.userName)
+        userName.text = userData.userName
+        DownloadImageTask(profilePicture)
+            .execute(userData.profilePicture);
+
+    }
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,8 +49,19 @@ class ProfileActivity : AppCompatActivity() {
 
         val logoutButton = findViewById<Button>(R.id.logoutButton) /// TODO: change logout logo
         logoutButton.setOnClickListener {
-            /// TODO:  open login activity and delete data from shared preferences
+            firebase.setUserID("")
+            AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener {
+                    val intent = Intent(this@ProfileActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                }
+
         }
 
     }
+
+
+
+
 }
