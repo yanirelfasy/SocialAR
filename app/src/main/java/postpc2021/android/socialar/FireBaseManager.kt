@@ -2,6 +2,7 @@ package postpc2021.android.socialar
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 
 import androidx.core.net.toUri
 
@@ -20,10 +21,11 @@ import postpc2021.android.socialar.dataTypes.MessageData
 import postpc2021.android.socialar.dataTypes.PostData
 import postpc2021.android.socialar.dataTypes.UserData
 import java.io.File
-import java.util.ArrayList
 import kotlin.reflect.KFunction1
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.toObject
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FireBaseManager(val context: Context) {
@@ -113,10 +115,14 @@ class FireBaseManager(val context: Context) {
      * */
     fun getMessagesByUser(userID: String): List<MessageData> {
         val messages = mutableListOf<MessageData>()
-        db.collection("$userCollection/$userID/messages")/*whereEqualTo("userID", userID)*/.get().addOnSuccessListener { documents ->
-            for (document in documents) {
-                val message = document.toObject(MessageData::class.java)
-                messages.add(message)
+        db.collection(userCollection).document(userID).get().addOnSuccessListener {
+            val messagesIDs = it["messages"]
+            for (msgID in messagesIDs as ArrayList<*>)
+            {
+                db.collection(messageCollection).document(msgID.toString()).get().addOnSuccessListener { inner_it ->
+                    val newData = inner_it.toObject(MessageData::class.java)
+                    messages.add(newData!!)
+                }
             }
         }
 

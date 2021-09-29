@@ -19,5 +19,5 @@ data class MessageData(
         val creationDate: String = ""
 ) : Serializable {
     val geoHash: String = GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))// Geohash for the location, used for querying
-    val id: String = UUID.randomUUID().toString() // Id of the message
+    var id: String = UUID.randomUUID().toString() // Id of the message
 }

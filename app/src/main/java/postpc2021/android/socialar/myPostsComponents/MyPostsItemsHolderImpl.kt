@@ -23,7 +23,7 @@ class MyPostsItemsHolderImpl(context: Context): Serializable {
 
     private fun initFromFB() {
         myMessagesList = fireBaseManager.getMessagesByUser(fireBaseManager.getUserID())
-        Toast.makeText(this.myContext, "check", Toast.LENGTH_SHORT).show()
+        Toast.makeText(myContext, "here", Toast.LENGTH_SHORT).show()
     }
 
     private fun sendFBChanged(action: String, old_position: Int) {
