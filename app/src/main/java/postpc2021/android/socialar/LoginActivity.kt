@@ -4,10 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -24,6 +22,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passEditText: EditText
     private lateinit var signUpText: TextView
     private lateinit var loginButton: Button
+    private lateinit var loadingProgressBar: ProgressBar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +37,8 @@ class LoginActivity : AppCompatActivity() {
         passEditText = findViewById(R.id.loginPassEditText)
         signUpText = findViewById(R.id.loginSignUPTextView)
         loginButton = findViewById(R.id.loginButton)
-
-
+        loadingProgressBar = findViewById(R.id.loading)
+        loadingProgressBar.visibility = View.GONE
         signUpText.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             finish()
@@ -49,19 +48,22 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString()
             val password = passEditText.text.toString()
-
+            loadingProgressBar.visibility = View.VISIBLE
             if (email.isNotBlank() && password.isNotBlank()) {
                 firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        loadingProgressBar.visibility = View.GONE
                         val userID = firebaseAuth.currentUser?.uid
                         fireBaseManager.setUserID(userID!!)
                         fireBaseManager.hasUserCompletedSignUp(::nextActivity)
 
                     }
                 }.addOnFailureListener {
+                    loadingProgressBar.visibility = View.GONE
                     Toast.makeText(applicationContext, it.localizedMessage, Toast.LENGTH_LONG).show()
                 }
             } else {
+                loadingProgressBar.visibility = View.GONE
                 Toast.makeText(applicationContext, "Please insert a valid email and password", Toast.LENGTH_LONG).show()
             }
         }
