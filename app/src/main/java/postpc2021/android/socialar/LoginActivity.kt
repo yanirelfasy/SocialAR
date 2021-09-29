@@ -14,12 +14,11 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.mapbox.mapboxsdk.maps.MapView
-import postpc2021.android.socialar.arComponents.ARView
 
 class LoginActivity : AppCompatActivity() {
     private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
     lateinit var firebaseAuth: FirebaseAuth
-    lateinit var providers: List<AuthUI.IdpConfig>
+//    lateinit var providers: List<AuthUI.IdpConfig>
 
     private lateinit var emailEditText: EditText
     private lateinit var passEditText: EditText
@@ -56,9 +55,8 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val userID = firebaseAuth.currentUser?.uid
                         fireBaseManager.setUserID(userID!!)
-                        val intent = Intent(this, ARView::class.java)
-                        finish()
-                        startActivity(intent)
+                        fireBaseManager.hasUserCompletedSignUp(::nextActivity)
+
                     }
                 }.addOnFailureListener {
                     Toast.makeText(applicationContext, it.localizedMessage, Toast.LENGTH_LONG).show()
@@ -83,60 +81,73 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-
-    /**
-     * Result from sign in is received here
-     * */
-    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        val response = result.idpResponse
-        if (result.resultCode == RESULT_OK) {
-            // Successfully signed in
-            val userID = FirebaseAuth.getInstance().currentUser?.uid
-            fireBaseManager.setUserID(userID!!)
-            setupUser()
-            // ...
+    private fun nextActivity(hasCompletedSignUp: Boolean) {
+        if (hasCompletedSignUp) {
+            val intent = Intent(this, MapActivity::class.java)
+            finish()
+            startActivity(intent)
         } else {
-            // Sign in failed. If response is null the user canceled the
-            // sign-in flow using the back button. Otherwise check
-            // response.getError().getErrorCode() and handle the error.
-            // ...
+            val intent = Intent(this, UserDetailsActivity::class.java)
+            finish()
+            startActivity(intent)
         }
     }
 
 
-    private fun setupUser() {
-        val userRef = fireBaseManager.getUserDoc()
-        userRef.get().addOnSuccessListener { document ->
-            // Case: User exists
-            if (document != null) {
-                signedIn()
-            }// Case: User does not yet exist in database
-            else {
-                userRef.set(hashMapOf(fireBaseManager.getUserID() to "userID"))
-                signUp()
-            }
-        }
-    }
-
-
-    private fun signedIn() {
-        val intent = Intent(this, MapActivity::class.java)
-        finish()
-        startActivity(intent)
-    }
-
-    private fun signUp() {
-//        val intent = Intent(this, UserDetailsActivity::class.java)
-        finish()
-        startActivity(intent)
-    }
-
-
-    private val signInLauncher = registerForActivityResult(
-        FirebaseAuthUIActivityResultContract()
-    ) { res ->
-        this.onSignInResult(res)
-    }
+//
+//    /**
+//     * Result from sign in is received here
+//     * */
+//    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+//        val response = result.idpResponse
+//        if (result.resultCode == RESULT_OK) {
+//            // Successfully signed in
+//            val userID = FirebaseAuth.getInstance().currentUser?.uid
+//            fireBaseManager.setUserID(userID!!)
+//            setupUser()
+//            // ...
+//        } else {
+//            // Sign in failed. If response is null the user canceled the
+//            // sign-in flow using the back button. Otherwise check
+//            // response.getError().getErrorCode() and handle the error.
+//            // ...
+//        }
+//    }
+//
+//
+//    private fun setupUser() {
+//        val userRef = fireBaseManager.getUserDoc()
+//        userRef.get().addOnSuccessListener { document ->
+//            // Case: User exists
+//            if (document != null) {
+//                signedIn()
+//            }// Case: User does not yet exist in database
+//            else {
+//                userRef.set(hashMapOf(fireBaseManager.getUserID() to "userID"))
+//                signUp()
+//            }
+//        }
+//    }
+//
+//
+//    private fun signedIn() {
+//        val intent = Intent(this, MapActivity::class.java)
+//        finish()
+//        startActivity(intent)
+//    }
+//
+//    private fun signUp() {
+////        val intent = Intent(this, UserDetailsActivity::class.java)
+//        finish()
+//        startActivity(intent)
+//    }
+//
+//
+//    private val signInLauncher = registerForActivityResult(
+//        FirebaseAuthUIActivityResultContract()
+//    ) { res ->
+//        this.onSignInResult(res)
+//    }
 
 
 }

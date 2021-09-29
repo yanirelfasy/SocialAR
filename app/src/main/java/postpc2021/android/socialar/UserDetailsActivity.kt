@@ -5,18 +5,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import com.google.firebase.auth.FirebaseAuth
 import postpc2021.android.socialar.dataTypes.UserData
 import java.util.*
 import kotlin.collections.ArrayList
 
 class UserDetailsActivity : AppCompatActivity() {
 
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private val PICK_IMAGE = 1
     lateinit var datePicker: DatePickerDialog
@@ -30,9 +29,12 @@ class UserDetailsActivity : AppCompatActivity() {
     var birthdayDate: String = ""
 
 
+    private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_details)
+
         init()
     }
 
@@ -44,22 +46,25 @@ class UserDetailsActivity : AppCompatActivity() {
         setupBirthdayPicker()
         setupProfilePicture()
         doneButton = findViewById(R.id.doneButton)
-
         doneButton.setOnClickListener {
-
-
             // Check the following:
             // Name is not blank
             // Birthday is not blank
             // Profile pic uri is not empty
             if (nameText.text.isNotBlank() && birthdayText.text.isNotBlank() && profilePicUri.isNotBlank() && joinDate.isNotBlank()) {
                 birthdayDate = birthdayText.text.toString()
-                val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
-                val userData = UserData(fireBaseManager.getUserID(), nameText.text.toString(), profilePicUri, birthdayDate, joinDate, ArrayList())
-                fireBaseManager.updateUserDetails(userData, ::startNextActivity)
+                fireBaseManager.uploadMedia(profilePicUri, fireBaseManager.getUserID(), ::uploadUserData)
 
+//                val photoUris = fireBaseManager.uploadPhotos(arrayListOf(profilePicUri), fireBaseManager.getUserID())
             }
         }
+    }
+
+
+    private fun uploadUserData(downloadUri: String) {
+
+        val userData = UserData(fireBaseManager.getUserID(), nameText.text.toString(), downloadUri, birthdayDate, joinDate, ArrayList())
+        fireBaseManager.updateUserDetails(userData, ::startNextActivity)
     }
 
     private fun startNextActivity() {
@@ -74,7 +79,7 @@ class UserDetailsActivity : AppCompatActivity() {
         birthdayText.setOnClickListener {
             val day = clndr.get(Calendar.DAY_OF_MONTH)
             val month = clndr.get(Calendar.MONTH)
-            val cyear = clndr.get(Calendar.YEAR) - 15
+            val cyear = clndr.get(Calendar.YEAR) - 20
             datePicker = DatePickerDialog(
                 this,
                 { _, year, monthOfYear, dayOfMonth -> birthdayText.setText("${dayOfMonth}/${(monthOfYear + 1)}/$year") }, cyear, month, day

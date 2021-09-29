@@ -2,10 +2,7 @@ package postpc2021.android.socialar
 
 import android.content.Context
 import android.net.Uri
-
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-
+import androidx.core.net.toUri
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryBounds
@@ -20,6 +17,7 @@ import postpc2021.android.socialar.dataTypes.UserData
 import java.io.File
 import java.util.ArrayList
 import kotlin.reflect.KFunction1
+import com.google.firebase.firestore.QueryDocumentSnapshot
 
 
 class FireBaseManager(val context: Context) {
@@ -31,32 +29,10 @@ class FireBaseManager(val context: Context) {
 
     private var userID = ""
 
-    private var _messagesAroundView = ArrayList<MessageData>()
-    private var messagesAroundViewLiveData: MutableLiveData<List<MessageData>> = MutableLiveData<List<MessageData>>()
-    val messagesAroundViewLiveDataPublic: LiveData<List<MessageData>> = messagesAroundViewLiveData
-
 
     val storage = Firebase.storage
 
     var db = FirebaseFirestore.getInstance()
-
-    init {
-    	messagesAroundViewLiveData.value = ArrayList(_messagesAroundView)
-    }
-
-    fun getMessagesAroundView(): List<MessageData>{
-        return ArrayList(_messagesAroundView)
-    }
-
-    fun onMessagesAroundViewReady(messages: ArrayList<MessageData>): Unit{
-        _messagesAroundView = messages
-        messagesAroundViewLiveData.value = ArrayList(_messagesAroundView)
-    }
-
-    fun setMessagesAroundView(latitude: Double, longitude: Double){
-        this.getMessagesByPoIandRange(latitude, longitude, 500.0, ::onMessagesAroundViewReady)
-    }
-
 
     fun setUserID(userID: String) {
         this.userID = userID
@@ -69,12 +45,12 @@ class FireBaseManager(val context: Context) {
     /**
      * Uploads a file specified by path to the database and returns a download uri for it
      * */
-    fun uploadMedia(path: String, messageID: String): String {
+    fun uploadMedia(path: String, storageLoc: String, callBack: (String) -> Unit) {
         val storageRef = storage.reference
-        val file = Uri.fromFile(File(path))
+//        val file = Uri.fromFile(File(path))
         // Todo
-        val mediaRef = storageRef.child("images/$messageID")
-        val uploadTask = mediaRef.putFile(file)
+        val mediaRef = storageRef.child("images/$storageLoc")
+        val uploadTask = mediaRef.putFile(path.toUri())
         var downloadUri = ""
         uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
@@ -85,29 +61,24 @@ class FireBaseManager(val context: Context) {
             mediaRef.downloadUrl
         }.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                downloadUri = task.result.toString()
+//                downloadUri = task.result.toString()
+                downloadUri = mediaRef.downloadUrl.toString()
+                callBack(downloadUri)
             }
 
         }
-        return downloadUri
     }
 
 
-    /**
-     * Upload a list of photos specified by their file paths, and return a list of download Uris for them
-     * */
-    fun uploadPhotos(paths: ArrayList<String>, messageID: String): ArrayList<String> {
-        val photoUris = ArrayList<String>()
-        for (path in paths) {
-            photoUris.add(uploadMedia(path, messageID))
-        }
-        return photoUris
-    }
-
-//    // TODO: If needed
-//    fun downloadMedia(downloadURI : String, messageID: String) {
-//        val storageRef = storage.reference
-//        val gsReference = storage.getReferenceFromUrl(downloadURI)
+//    /**
+//     * Upload a list of photos specified by their file paths, and return a list of download Uris for them
+//     * */
+//    fun uploadPhotos(paths: ArrayList<String>, storageLoc: String): ArrayList<String> {
+//        val photoUris = ArrayList<String>()
+//        for (path in paths) {
+//            uploadMedia(path, storageLoc, photoUris)
+//        }
+//        return photoUris
 //    }
 
 
@@ -174,24 +145,20 @@ class FireBaseManager(val context: Context) {
     }
 
     /**
+     *   Upload a message
      *
      * */
-    fun uploadMessage(messageData: MessageData, hasDLuris: Boolean = false) {
-        // If media has not yet been uploaded
-        // If media in the message contains photo file locations and not download uris
-        if (!hasDLuris) {
-            messageData.mediaContent = uploadPhotos(messageData.mediaContent, messageData.id)
-        }
-
+    fun uploadMessage(messageData: MessageData, callBack: () -> Unit = {}) {
         db.collection(messageCollection).document(messageData.id).set(messageData)
             .addOnSuccessListener {
                 // On success, update users message array with message ID
                 val userRef = db.collection(userCollection).document(userID)
                 userRef.update("messages", FieldValue.arrayUnion(messageData.id))
-
+                callBack()
             }
             .addOnFailureListener { }
     }
+
 
     fun getUserDetails(userID: String, callBack: KFunction1<UserData, Unit>) {
         val userDocRef = db.collection(userCollection).document(userID)
@@ -247,5 +214,13 @@ class FireBaseManager(val context: Context) {
         }
     }
 
-
+    fun hasUserCompletedSignUp(callBack: (Boolean) -> Unit) {
+        db.collection(userCollection).document(userID).get().addOnSuccessListener {
+            val document = it.getDocumentReference("userName")
+            callBack(document != null)
+        }
+    }
 }
+
+
+
