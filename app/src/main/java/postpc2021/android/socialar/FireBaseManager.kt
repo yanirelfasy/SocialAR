@@ -89,8 +89,8 @@ class FireBaseManager(val context: Context) {
             mediaRef.downloadUrl
         }.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-//                downloadUri = task.result.toString()
-                downloadUri = mediaRef.downloadUrl.toString()
+                downloadUri = task.result.toString()
+//                downloadUri = mediaRef.downloadUrl.toString()
                 callBack(downloadUri)
             }
 
