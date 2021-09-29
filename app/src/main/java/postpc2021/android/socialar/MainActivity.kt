@@ -11,7 +11,6 @@ import com.wikitude.architect.ArchitectView
 import com.wikitude.common.devicesupport.Feature
 import com.wikitude.common.permission.PermissionManager
 import com.wikitude.common.permission.PermissionManager.PermissionManagerCallback
-import postpc2021.android.socialar.arComponents.ARView
 import java.util.*
 
 enum class Feature {

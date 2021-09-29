@@ -1,4 +1,3 @@
-const MAX_SHOW_DISTANCE = 100; //30  max distance set to around 100m of visible markers
 
 /* Implementation of AR-Experience (aka "World"). */
 var World = {
@@ -144,7 +143,7 @@ var World = {
     /* Updates values show in "range panel". */
     renderToMaxDistance: function renderToMaxDistance() {
         /* Max range relative to the maximum distance of all visible places. */
-        var maxRangeMeters = Math.round(World.getMaxDistance() * (MAX_SHOW_DISTANCE / 100));
+        var maxRangeMeters = 100
 
         /* Update culling distance, so only places within given range are rendered. */
         AR.context.scene.cullingDistance = Math.max(maxRangeMeters, 1);
