@@ -23,6 +23,7 @@ import java.io.File
 import java.util.ArrayList
 import kotlin.reflect.KFunction1
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.ktx.toObject
 
 
 class FireBaseManager(val context: Context) {
@@ -243,8 +244,8 @@ class FireBaseManager(val context: Context) {
 
     fun hasUserCompletedSignUp(callBack: (Boolean) -> Unit) {
         db.collection(userCollection).document(userID).get().addOnSuccessListener {
-            val document = it.getDocumentReference("userName")
-            callBack(document != null)
+            val document = it.toObject(UserData::class.java)
+            callBack(document?.userName != null)
         }
     }
 }
