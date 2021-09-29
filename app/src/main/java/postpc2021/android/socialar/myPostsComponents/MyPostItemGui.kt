@@ -9,6 +9,6 @@ class MyPostItemGui(itemView: View): RecyclerView.ViewHolder(itemView) {
 //    var profilePicture: ImageView = itemView.findViewById(R.id.profileImageView) as ImageView
     var contentSummary: TextView = itemView.findViewById(R.id.contentSummary)
     var deletePostButton: ImageButton = itemView.findViewById(R.id.deletePostImageButton)
+    var likes: TextView =itemView.findViewById(R.id.numOfLikesTextView)
     /// TODO: add buttons and details to the fav item xml
-    var itemView: View? = itemView
 }

@@ -14,6 +14,7 @@ class MyPostsItem: Serializable{
     private val lat: Double = nextDouble()
     @RequiresApi(Build.VERSION_CODES.O)
     private val ttl: LocalTime = LocalTime.now()
+    private var likes: Int = 0
 
     fun setId(id: UUID) {
         this.uuid = id
@@ -43,6 +44,15 @@ class MyPostsItem: Serializable{
     fun getLatitude(): Double
     {
         return  this.lat
+    }
+
+    fun setLike(likes: Int)
+    {
+        this.likes = likes
+    }
+
+    fun getLikes(): Int{
+        return this.likes
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -42,6 +42,9 @@
         android:theme="@style/Theme.SocialAR"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".LimitedMapActivity"
+            android:exported="true" />
+        <activity
             android:name=".NewMessageActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Dialog" />

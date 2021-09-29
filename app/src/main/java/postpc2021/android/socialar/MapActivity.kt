@@ -139,21 +139,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		val extras = intent.extras
 		if(extras != null)
 		{
-			val favorites = extras.get("favorites")
-			val myPosts = extras.get("myPosts")
-//			if(favorites != null)
-//			{
-//				this.locations = favorites as ArrayList<MessageData>
-//
-//			}
-//			else if(myPosts != null)
-//			{
-//				this.locations = myPosts as ArrayList<MessageData>
-//			}
-//			else
-//			{
-//				return
-//			}
 			val changeViewButton = findViewById<ImageButton>(R.id.changeView)
 			changeViewButton.performClick()
 			findViewById<ImageButton>(R.id.profileButton).visibility = View.GONE
@@ -238,32 +223,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 
 	private fun drawMarkersInMap(symbolManager: SymbolManager){
 		// Create symbol manager object.
-		var averagedLongitude = 0.0
-		var averagedLatitude = 0.0
 		var symbol: SymbolOptions
 		this.locations = fireBaseManager.getMessagesAroundView() as ArrayList<MessageData>
 		symbolManager.deleteAll()
 		// Create a symbol at the specified location.
 		for(location: MessageData in this.locations)
 		{
-//			averagedLongitude += location.longitude
-//			averagedLatitude += location.latitude
 			symbol = SymbolOptions()
 					.withLatLng(LatLng(location.latitude, location.longitude))
 					.withIconImage("marker")
+					.withTextAnchor("PinText")
 					.withIconSize(1.3f)
 			symbolManager.create(symbol)
 		}
-//		if(this.locations.size > 0)
-//		{
-//			val position = CameraPosition.Builder()
-//					.target(LatLng(averagedLatitude/this.locations.size,
-//							averagedLongitude/this.locations.size))
-//					.zoom(8.0)
-//					.tilt(0.0)
-//					.build()
-//			this.mapboxMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(position))
-//		}
 	}
 
 	private fun enableLocationComponent(loadedMapStyle: Style) {

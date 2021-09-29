@@ -6,12 +6,11 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import postpc2021.android.socialar.LimitedMapActivity
 import postpc2021.android.socialar.MapActivity
 import postpc2021.android.socialar.R
-import postpc2021.android.socialar.favoritesComponents.FavoriteItem
+import postpc2021.android.socialar.dataTypes.MessageData
 import java.util.ArrayList
 
 class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPostItemGui>() {
@@ -27,12 +26,11 @@ class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPo
                 LayoutInflater.from(myContext).inflate(R.layout.my_post_item, parent,
                         false)
         view.setOnClickListener {
-            val item: MyPostsItem = items!!.getCurrentPostsItems()!![this.clickedPosition]
-            val intent = Intent(myContext, MapActivity::class.java)
-            val locationPair: Pair<Double, Double> = Pair(item.getLongitude(), item.getLatitude())
-            val tempList = ArrayList<Pair<Double, Double>>()
-            tempList.add(locationPair)
-            intent.putExtra("myPosts", tempList) /// TODO: change to firebase key for relevant data
+            val item: MessageData = items!!.getCurrentMessageItems()!![this.clickedPosition]
+            val intent = Intent(myContext, LimitedMapActivity::class.java)
+            val tempList = ArrayList<MessageData>()
+            tempList.add(item)
+            intent.putExtra("messages", tempList)
             myContext.startActivity(intent)
         }
         return MyPostItemGui(view)
@@ -46,12 +44,14 @@ class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPo
             callback(myPostItemGuiHolder.adapterPosition)
         })
         this.clickedPosition = myPostItemGuiHolder.adapterPosition
+        myPostItemGuiHolder.contentSummary.text = items!!.getCurrentMessageItems()[position].textContent
+        myPostItemGuiHolder.likes.text = items!!.getCurrentMessageItems()[position].likeID.size.toString()
     }
 
     override fun getItemCount(): Int {
         if(items != null)
         {
-            return items!!.getCurrentPostsItems()!!.size
+            return items!!.getCurrentMessageItems()!!.size
         }
         else {
             return 0

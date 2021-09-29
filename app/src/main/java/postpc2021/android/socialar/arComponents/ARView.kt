@@ -30,7 +30,6 @@ open class ARView : AppCompatActivity() {
 	private var geoExtension: GeoExtension? = null
 	private var messageActionsMiddleware: MessageActionsMiddleware? = null
 	val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
-	var profileViewID = 0
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

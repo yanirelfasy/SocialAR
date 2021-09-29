@@ -18,7 +18,6 @@ class NewMessageActivity : Activity() {
         val postTitleView = findViewById<TextInputEditText>(R.id.postTitleEditText)
         val postContentView = findViewById<TextInputEditText>(R.id.postContentEditText)
         val addMedia = findViewById<ImageButton>(R.id.addMediaImageButton)
-//        sendPostButton.rootView.setBackgroundColor(R.color.black)
         sendPostButton.setOnClickListener {
             if (postTitleView.text.toString() == "" || postContentView.text.toString() == "")
                 Toast.makeText(this, "Please insert post title and content to continue!",

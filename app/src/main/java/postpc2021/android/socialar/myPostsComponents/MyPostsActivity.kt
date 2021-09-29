@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,12 +23,10 @@ class MyPostsActivity : AppCompatActivity() {
 
         this.title = "My Posts"
         holder = MyPostsItemsHolderImpl(this.applicationContext)
-        val fav = MyPostsItem()
-        holder!!.addNewMyPostObject(fav)
         val mapButton = findViewById<FloatingActionButton>(R.id.seeItemsOnMapButton)
         mapButton.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("myPosts", holder!!.getMyPostsLocationsList()) /// TODO: change to firebase key for relevant data
+            intent.putExtra("messages", holder!!.getCurrentMessageItems())
             this.startActivity(intent)
         }
         val adapter = MyPostsAdapter(holder)
@@ -37,7 +34,7 @@ class MyPostsActivity : AppCompatActivity() {
         myPostsRecyclerView.adapter = adapter
         myPostsRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         adapter.onDeleteCallBack = {position ->
-            holder!!.deleteMyPost(holder!!.getCurrentPostsItems()!![position])
+            holder!!.deleteMyPost(holder!!.getCurrentMessageItems()!![position])
         }
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {

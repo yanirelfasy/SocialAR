@@ -27,8 +27,6 @@ import com.google.firebase.firestore.ktx.toObject
 
 
 class FireBaseManager(val context: Context) {
-
-
     private val userIDField = "userID"
     private val userCollection = "users"
     private val messageCollection = "messages"
@@ -185,6 +183,17 @@ class FireBaseManager(val context: Context) {
                 callBack()
             }
             .addOnFailureListener { }
+    }
+
+    fun deleteMessage(messageData: MessageData, callBack: () -> Unit = {}) {
+        db.collection(messageCollection).document(messageData.id).delete()
+                .addOnSuccessListener {
+                    // On success, update users message array with message ID
+                    val userRef = db.collection(userCollection).document(userID)
+                    userRef.update("messages", FieldValue.arrayRemove(messageData.id))
+                    callBack()
+                }
+                .addOnFailureListener { }
     }
 
 
