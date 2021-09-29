@@ -2,7 +2,12 @@ package postpc2021.android.socialar
 
 import android.content.Context
 import android.net.Uri
+
 import androidx.core.net.toUri
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryBounds
@@ -29,10 +34,32 @@ class FireBaseManager(val context: Context) {
 
     private var userID = ""
 
+    private var _messagesAroundView = ArrayList<MessageData>()
+    private var messagesAroundViewLiveData: MutableLiveData<List<MessageData>> = MutableLiveData<List<MessageData>>()
+    val messagesAroundViewLiveDataPublic: LiveData<List<MessageData>> = messagesAroundViewLiveData
+
 
     val storage = Firebase.storage
 
     var db = FirebaseFirestore.getInstance()
+
+    init {
+    	messagesAroundViewLiveData.value = ArrayList(_messagesAroundView)
+    }
+
+    fun getMessagesAroundView(): List<MessageData>{
+        return ArrayList(_messagesAroundView)
+    }
+
+    fun onMessagesAroundViewReady(messages: ArrayList<MessageData>): Unit{
+        _messagesAroundView = messages
+        messagesAroundViewLiveData.value = ArrayList(_messagesAroundView)
+    }
+
+    fun setMessagesAroundView(latitude: Double, longitude: Double){
+        this.getMessagesByPoIandRange(latitude, longitude, 500.0, ::onMessagesAroundViewReady)
+    }
+
 
     fun setUserID(userID: String) {
         this.userID = userID
