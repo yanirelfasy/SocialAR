@@ -16,6 +16,11 @@ import com.wikitude.common.camera.CameraSettings.CameraResolution
 import postpc2021.android.socialar.*
 import postpc2021.android.socialar.dataTypes.MessageData
 import postpc2021.android.socialar.dataTypes.UserData
+import java.util.zip.Inflater
+import android.view.LayoutInflater
+
+
+
 
 
 open class ARView : AppCompatActivity() {
@@ -48,70 +53,27 @@ open class ARView : AppCompatActivity() {
 
 	private fun addButtons()
 	{
-		// create container for buttons
-		val containerLayout = RelativeLayout(this)
-		containerLayout.setLayoutParams(RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.FILL_PARENT,
-				RelativeLayout.LayoutParams.FILL_PARENT))
-
-		// add newMessageButton
-		val addMessageButton = AppCompatButton(this)
-		val addMessageParams = RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT
-		)
-		addMessageParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-		addMessageParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
-		addMessageButton.background = AppCompatResources.getDrawable(this, R.drawable.button_primary)
-		addMessageButton.text = "+"
-		addMessageButton.layoutParams = addMessageParams
+		val inflater = this.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+		val childLayout = inflater.inflate(R.layout.activity_a_r_view, findViewById(R.id.constraintLayout))
+		addContentView(childLayout, RelativeLayout.LayoutParams(
+		RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT))
+		val addMessageButton = findViewById<AppCompatButton>(R.id.addMessage)
 		addMessageButton.setOnClickListener{
 			val intent = Intent(this, NewMessageActivity::class.java)
 			val requestCode = 424242
 			startActivityForResult(intent, requestCode)
 		}
-		containerLayout.addView(addMessageButton)
-
-
-		// add profileButton
-		val profileButton = ImageButton(this)
-		this.profileViewID = View.generateViewId()
-		profileButton.id = this.profileViewID
+		val profileButton = findViewById<ImageButton>(R.id.profileButton)
 		fireBaseManager.getUserDetails(fireBaseManager.getUserID(), ::setUserData)
-		val profileButtonParams = RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT
-		)
-		profileButtonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-		profileButtonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
-		profileButton.background = AppCompatResources.getDrawable(this, R.drawable.button_primary)
-		profileButton.layoutParams = profileButtonParams
 		profileButton.setOnClickListener {
 			val intent = Intent(this, ProfileActivity::class.java)
 			startActivity(intent)
 		}
-		containerLayout.addView(profileButton)
-
-		// add changeView button
-		val changeViewButton = ImageButton(this)
-		val changeViewParams = RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT
-		)
-		changeViewParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-		changeViewParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-		changeViewButton.background = AppCompatResources.getDrawable(this, R.drawable.button_primary)
-		changeViewButton.layoutParams = changeViewParams
-		changeViewButton.setImageResource(android.R.drawable.ic_dialog_map)
+		val changeViewButton = findViewById<ImageButton>(R.id.mapView)
 		changeViewButton.setOnClickListener {
 			val intent = Intent(this, MapActivity::class.java)
 			startActivity(intent)
 		}
-		containerLayout.addView(changeViewButton)
-
-		// add container with all new buttons to the content view
-		addContentView(containerLayout, RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT))
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -136,9 +98,9 @@ open class ARView : AppCompatActivity() {
 	}
 
 	fun setUserData(userData: UserData){
-		val profileImageButton = findViewById<ImageButton>(this.profileViewID)
+		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
 		if(!userData.profilePicture.isEmpty()){
-			DownloadImageTask(findViewById(this.profileViewID))
+			DownloadImageTask(findViewById(R.id.profileButton))
 					.execute(userData.profilePicture);
 		}
 		else{
