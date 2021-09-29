@@ -7,6 +7,17 @@
     tools:context=".UserDetailsActivity">
 
 
+    <TextView
+        android:id="@+id/completeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Complete Signup"
+        app:layout_constraintBottom_toTopOf="@id/nameText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
     <EditText
         android:id="@+id/birthdayText"
         android:layout_width="wrap_content"
@@ -64,12 +75,13 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             app:cardCornerRadius="150dp">
+
             <ImageView
                 android:id="@+id/picButton"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
-                android:src="@color/teal_200"/>
+                android:src="@color/teal_200" />
 
         </androidx.cardview.widget.CardView>
 
@@ -86,18 +98,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/birthdayText" />
-    <!--    <ImageButton-->
-    <!--        android:id="@+id/picButton"-->
-    <!--        android:layout_width="200dp"-->
-    <!--        android:layout_height="200dp"-->
-    <!--        android:layout_marginTop="10dp"-->
-    <!--        android:minHeight="20dp"-->
-    <!--        android:minWidth="20dp"-->
-    <!--        android:scaleType="centerInside"-->
-    <!--        android:adjustViewBounds="true"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/picText"-->
-    <!--        tools:srcCompat="@tools:sample/avatars" />-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
