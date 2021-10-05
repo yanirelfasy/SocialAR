@@ -30,6 +30,7 @@ class MessageActionsActivity : AppCompatActivity() {
 		findViewById<TextView>(R.id.userName).text = data.userName
 		findViewById<TextView>(R.id.likes).text = "${data.likeID.size} Likes"
 		findViewById<TextView>(R.id.date).text = LocalDate.parse(data.creationDate, DateTimeFormatter.ISO_DATE).toString()
+		findViewById<TextView>(R.id.messageContent).text = data.textContent
 		DownloadImageTask(findViewById<ImageView>(R.id.profilePicture))
 				.execute(data.profilePicture);
 	}
