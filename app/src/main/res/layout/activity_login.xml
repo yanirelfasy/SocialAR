@@ -4,7 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:background="@drawable/login_background"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/login_background"
+        app:layout_constraintBottom_toTopOf="@+id/loginEmailEditText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="Login"
+        android:textSize="30dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/ulight"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/login_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="Social AR"
+        android:textSize="40dp"
+        android:fontFamily="@font/ulight"
+        />
+
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="500dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/custom_rectangle"
+        android:id="@+id/login_background"
+        />
 
 
     <EditText
@@ -12,31 +51,34 @@
         android:layout_width="240dp"
         android:layout_height="50dp"
         android:layout_marginTop="104dp"
-        android:layout_marginBottom="12dp"
         android:ems="10"
         android:hint="Email"
-        android:inputType="textEmailAddress"
         android:padding="10dp"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/loginPassEditText"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:inputType="textNoSuggestions"
+        android:backgroundTint="@drawable/edit_text_style"
+        app:layout_constraintEnd_toEndOf="@id/login_background"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@id/login_background"
+        app:layout_constraintTop_toTopOf="@id/login_background"
+        />
 
     <EditText
         android:id="@+id/loginPassEditText"
         android:layout_width="240dp"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="41dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
         android:padding="10dp"
         android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:backgroundTint="@drawable/edit_text_style"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
-        app:layout_constraintStart_toStartOf="@+id/loginEmailEditText"
+        app:layout_constraintStart_toStartOf="@+id/login_background"
+        app:layout_constraintEnd_toEndOf="@+id/login_background"
         app:layout_constraintTop_toBottomOf="@+id/loginEmailEditText" />
 
     <Button
@@ -52,6 +94,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginPassEditText" />
 
+        <TextView
+            android:id="@+id/loginQuestionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/ulight"
+            android:text="Don't have an account yet?"
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/login_background"
+            app:layout_constraintRight_toRightOf="@id/login_background"
+            app:layout_constraintTop_toBottomOf="@id/loginButton"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/loginSignUPTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.6"
+            android:text="Sign Up"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/ubold"
+            app:layout_constraintTop_toBottomOf="@id/loginQuestionTextView"
+            app:layout_constraintLeft_toLeftOf="@id/login_background"
+            app:layout_constraintRight_toRightOf="@id/login_background"
+
+            />
+
     <LinearLayout
         android:id="@+id/loginLinearLayout"
         android:layout_width="360dp"
@@ -64,25 +137,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginButton">
 
-        <TextView
-            android:id="@+id/loginQuestionTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:layout_weight="1"
-            android:text="Don't have an account yet?"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/loginSignUPTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2.6"
-            android:text="Sign Up"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+
+
     </LinearLayout>
 
     <ProgressBar
