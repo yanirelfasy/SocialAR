@@ -10,11 +10,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class UserData(
-		val userID: String = "",
-		val userName: String = "",
-		val profilePicture: String = "",
-		val dateOfBirth: String = "",
-		val joinDate: String = "",
-		val messages: ArrayList<String> = ArrayList()
+    val userID: String = "",
+    val userName: String = "",
+    val profilePicture: String = "",
+    val dateOfBirth: String = "",
+    val joinDate: String = "",
+    val messages: ArrayList<String> = ArrayList(),
+    val favorites: ArrayList<String> = ArrayList()
 ) : Serializable {
 }

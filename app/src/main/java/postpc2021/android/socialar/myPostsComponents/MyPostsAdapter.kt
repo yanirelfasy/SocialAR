@@ -13,18 +13,20 @@ import postpc2021.android.socialar.R
 import postpc2021.android.socialar.dataTypes.MessageData
 import java.util.ArrayList
 
-class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPostItemGui>() {
+class MyPostsAdapter(holder: MyPostsItemsHolderImpl?) : RecyclerView.Adapter<MyPostItemGui>() {
     private var items: MyPostsItemsHolderImpl? = holder
     private var guiHolderList: MutableList<MyPostItemGui>? = ArrayList()
-    var onDeleteCallBack: ((Int)->Unit)?=null
+    var onDeleteCallBack: ((Int) -> Unit)? = null
     private var clickedPosition: Int = -1
     lateinit var myContext: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyPostItemGui {
         myContext = parent.context
         val view: View =
-                LayoutInflater.from(myContext).inflate(R.layout.my_post_item, parent,
-                        false)
+            LayoutInflater.from(myContext).inflate(
+                R.layout.my_post_item, parent,
+                false
+            )
         view.setOnClickListener {
             val item: MessageData = items!!.getCurrentMessageItems()!![this.clickedPosition]
             val intent = Intent(myContext, LimitedMapActivity::class.java)
@@ -40,7 +42,7 @@ class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPo
     override fun onBindViewHolder(myPostItemGuiHolder: MyPostItemGui, position: Int) {
         guiHolderList!!.add(myPostItemGuiHolder)
         myPostItemGuiHolder.deletePostButton.setOnClickListener(View.OnClickListener {
-            val callback = onDeleteCallBack?:return@OnClickListener
+            val callback = onDeleteCallBack ?: return@OnClickListener
             callback(myPostItemGuiHolder.adapterPosition)
         })
         this.clickedPosition = myPostItemGuiHolder.adapterPosition
@@ -49,11 +51,9 @@ class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPo
     }
 
     override fun getItemCount(): Int {
-        if(items != null)
-        {
-            return items!!.getCurrentMessageItems()!!.size
-        }
-        else {
+        if (items != null) {
+            return items!!.getCurrentMessageItems().size
+        } else {
             return 0
         }
     }

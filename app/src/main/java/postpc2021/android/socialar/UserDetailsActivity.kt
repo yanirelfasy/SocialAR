@@ -63,7 +63,7 @@ class UserDetailsActivity : AppCompatActivity() {
 
     private fun uploadUserData(downloadUri: String) {
 
-        val userData = UserData(fireBaseManager.getUserID(), nameText.text.toString(), downloadUri, birthdayDate, joinDate, ArrayList())
+        val userData = UserData(fireBaseManager.getUserID(), nameText.text.toString(), downloadUri, birthdayDate, joinDate)
         fireBaseManager.updateUserDetails(userData, ::startNextActivity)
     }
 

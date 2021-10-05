@@ -11,20 +11,25 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MyPostsItemsHolderImpl(context: Context): Serializable {
+class MyPostsItemsHolderImpl(context: Context) : Serializable {
     private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
-    private var myMessagesList: List<MessageData>? = null
+    private var myMessagesList: List<MessageData>? = ArrayList()
     private var myPostsList: MutableList<PostData>? = ArrayList()
     private var myContext = context
 
-    init{
+    init {
         initFromFB()
     }
 
     private fun initFromFB() {
-        myMessagesList = fireBaseManager.getMessagesByUser(fireBaseManager.getUserID())
+        fireBaseManager.getMessagesByUser(fireBaseManager.getUserID(), ::setMessageList)
         Toast.makeText(myContext, "here", Toast.LENGTH_SHORT).show()
     }
+
+    private fun setMessageList(messages: ArrayList<MessageData>) {
+        myMessagesList = messages
+    }
+
 
     private fun sendFBChanged(action: String, old_position: Int) {
         val broadcast = Intent("my_posts_sp_changed")

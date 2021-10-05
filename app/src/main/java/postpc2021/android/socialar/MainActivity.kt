@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity(){
 				override fun permissionsGranted(requestCode: Int) {
 					val intent = Intent(this@MainActivity, LoginActivity::class.java)
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+					finish()
 					startActivity(intent)
 				}
 

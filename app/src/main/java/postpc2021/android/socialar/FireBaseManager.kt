@@ -45,19 +45,19 @@ class FireBaseManager(val context: Context) {
     var db = FirebaseFirestore.getInstance()
 
     init {
-    	messagesAroundViewLiveData.value = ArrayList(_messagesAroundView)
+        messagesAroundViewLiveData.value = ArrayList(_messagesAroundView)
     }
 
-    fun getMessagesAroundView(): List<MessageData>{
+    fun getMessagesAroundView(): List<MessageData> {
         return ArrayList(_messagesAroundView)
     }
 
-    fun onMessagesAroundViewReady(messages: ArrayList<MessageData>): Unit{
+    fun onMessagesAroundViewReady(messages: ArrayList<MessageData>): Unit {
         _messagesAroundView = messages
         messagesAroundViewLiveData.value = ArrayList(_messagesAroundView)
     }
 
-    fun setMessagesAroundView(latitude: Double, longitude: Double){
+    fun setMessagesAroundView(latitude: Double, longitude: Double) {
         this.getMessagesByPoIandRange(latitude, longitude, 500.0, ::onMessagesAroundViewReady)
     }
 
@@ -113,20 +113,40 @@ class FireBaseManager(val context: Context) {
     /**
      * Returns a list containing all message data of the specified userID
      * */
-    fun getMessagesByUser(userID: String): List<MessageData> {
-        val messages = mutableListOf<MessageData>()
+    fun getMessagesByUser(userID: String, callBack: (ArrayList<MessageData>) -> Unit) {
+        val messages = ArrayList<MessageData>()
+        val tasks = mutableListOf<Task<DocumentSnapshot>>()
         db.collection(userCollection).document(userID).get().addOnSuccessListener {
-            val messagesIDs = it["messages"]
-            for (msgID in messagesIDs as ArrayList<*>)
-            {
-                db.collection(messageCollection).document(msgID.toString()).get().addOnSuccessListener { inner_it ->
-                    val newData = inner_it.toObject(MessageData::class.java)
-                    messages.add(newData!!)
+            val userData = it.toObject(UserData::class.java)
+            if (userData != null) {
+                val messageIDs = userData.messages
+                for (messageId in messageIDs) {
+                    val messageTask = db.collection(messageCollection).document(messageId).get()
+                    tasks.add(messageTask)
                 }
+            }
+//            for (msgID in messagesIDs as ArrayList<*>)
+//            {
+//                db.collection(messageCollection).document(msgID.toString()).get().addOnSuccessListener { inner_it ->
+//                    val newData = inner_it.toObject(MessageData::class.java)
+//                    messages.add(newData!!)
+//                }
+//            }
+        }
+
+        Tasks.whenAllComplete(tasks).addOnCompleteListener {
+            it.addOnCompleteListener {
+                for (task in tasks) {
+                    val message = task.result.toObject(MessageData::class.java)
+                    if (message != null) {
+                        messages.add(message)
+                    }
+                }
+                callBack(messages)
             }
         }
 
-        return messages
+
     }
 
     /**
@@ -193,13 +213,13 @@ class FireBaseManager(val context: Context) {
 
     fun deleteMessage(messageData: MessageData, callBack: () -> Unit = {}) {
         db.collection(messageCollection).document(messageData.id).delete()
-                .addOnSuccessListener {
-                    // On success, update users message array with message ID
-                    val userRef = db.collection(userCollection).document(userID)
-                    userRef.update("messages", FieldValue.arrayRemove(messageData.id))
-                    callBack()
-                }
-                .addOnFailureListener { }
+            .addOnSuccessListener {
+                // On success, update users message array with message ID
+                val userRef = db.collection(userCollection).document(userID)
+                userRef.update("messages", FieldValue.arrayRemove(messageData.id))
+                callBack()
+            }
+            .addOnFailureListener { }
     }
 
 

@@ -64,6 +64,7 @@ class FavoritesActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putSerializable("favsList", holder!!.saveState())
+
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {

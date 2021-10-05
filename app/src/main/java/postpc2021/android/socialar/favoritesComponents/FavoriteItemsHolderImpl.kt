@@ -8,12 +8,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class FavoriteItemsHolderImpl(context: Context): Serializable {
+class FavoriteItemsHolderImpl(context: Context) : Serializable {
     private var favoritesList: MutableList<FavoriteItem>? = ArrayList()
     private var sp = context.getSharedPreferences("favorites_list_db", Context.MODE_PRIVATE)
     private var favoritesIDSet: MutableSet<String>? = null
     private var myContext = context
-    init{
+
+    init {
         initFromSP()
     }
 
@@ -31,7 +32,6 @@ class FavoriteItemsHolderImpl(context: Context): Serializable {
     }
 
 
-
     private fun sendSPChanged(action: String, old_position: Int) {
         val broadcast = Intent("favorites_sp_changed")
         broadcast.putExtra(action, old_position)
@@ -43,6 +43,7 @@ class FavoriteItemsHolderImpl(context: Context): Serializable {
         val editor = sp.edit()
         editor.putStringSet("favoritesIDSet", favoritesIDSet)
         editor.putString(favItem.getId().toString() + "_content_summary", favItem.getContent())
+
         /// TODO: update SP DB with favItem detail
         editor.apply()
 
@@ -57,29 +58,24 @@ class FavoriteItemsHolderImpl(context: Context): Serializable {
     }
 
 
-
     fun getCurrentFavsItems(): List<FavoriteItem>? {
         return favoritesList
     }
 
     fun addNewFavObject(fav: FavoriteItem): Boolean {
         var realFav: FavoriteItem? = null
-        for (favFromList in favoritesList!!)
-        {
-            if(favFromList.getId().toString() == fav.getId().toString())
-            {
+        for (favFromList in favoritesList!!) {
+            if (favFromList.getId().toString() == fav.getId().toString()) {
                 realFav = fav
                 break
             }
         }
-        if(realFav == null) {
+        if (realFav == null) {
             favoritesList!!.add(0, fav)
             updateSP(fav)
             sendSPChanged("newFav", favoritesList!!.indexOf(fav))
             return true
-        }
-        else
-        {
+        } else {
             Toast.makeText(myContext, "Favorite already exists", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -104,12 +100,10 @@ class FavoriteItemsHolderImpl(context: Context): Serializable {
         favoritesList = prevState.favs
     }
 
-    fun getFavoritesLocationsList(): ArrayList<Pair<Double, Double>>?
-    {
+    fun getFavoritesLocationsList(): ArrayList<Pair<Double, Double>>? {
         val locations = ArrayList<Pair<Double, Double>>()
-        for (item: FavoriteItem in favoritesList!!)
-        {
-            locations.add(Pair(item.getLongitude(), item.getLatitude()))
+        for (item: FavoriteItem in favoritesList!!) {
+            locations.add(Pair(item.getLatitude(), item.getLongitude()))
         }
         return locations
     }
