@@ -89,7 +89,6 @@
         android:layout_marginBottom="10dp"
         android:text="Login"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/loginLinearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginPassEditText" />
@@ -125,22 +124,6 @@
 
             />
 
-    <LinearLayout
-        android:id="@+id/loginLinearLayout"
-        android:layout_width="360dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="170dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton">
-
-
-
-
-    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/loading"
