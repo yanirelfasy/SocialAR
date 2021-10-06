@@ -26,7 +26,7 @@ class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPo
                 LayoutInflater.from(myContext).inflate(R.layout.my_post_item, parent,
                         false)
         view.setOnClickListener {
-            val item: MessageData = items!!.getCurrentMessageItems()!![this.clickedPosition]
+            val item: MessageData = items!!.getCurrentMessageItems()[this.clickedPosition]
             val intent = Intent(myContext, LimitedMapActivity::class.java)
             val tempList = ArrayList<MessageData>()
             tempList.add(item)

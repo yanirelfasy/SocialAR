@@ -134,18 +134,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		}
 	}
 
-	private fun getLocationsFromExtras()
-	{
-		val extras = intent.extras
-		if(extras != null)
-		{
-			val changeViewButton = findViewById<ImageButton>(R.id.changeView)
-			changeViewButton.performClick()
-			findViewById<ImageButton>(R.id.profileButton).visibility = View.GONE
-			changeViewButton.visibility = View.GONE
-			findViewById<AppCompatButton>(R.id.addMessage).visibility = View.GONE
-		}
-	}
 
 	private fun setCameraTrackingMode(@CameraMode.Mode mode: Int) {
 		val locationComponent = this.mapboxMap!!.locationComponent
@@ -197,7 +185,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 			enableLocationComponent(style)
 			val uiSettings = mapboxMap.uiSettings
 			uiSettings.isCompassEnabled = false
-			getLocationsFromExtras()
 			val locationComponent = this.mapboxMap!!.locationComponent
 			val symbolManager = SymbolManager(mapView!!, mapboxMap, style);
 			symbolManager.iconAllowOverlap = true;

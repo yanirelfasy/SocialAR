@@ -1,8 +1,6 @@
 package postpc2021.android.socialar
 
 import android.content.Context
-import android.net.Uri
-import android.widget.Toast
 
 import androidx.core.net.toUri
 
@@ -20,11 +18,7 @@ import com.google.firebase.storage.ktx.storage
 import postpc2021.android.socialar.dataTypes.MessageData
 import postpc2021.android.socialar.dataTypes.PostData
 import postpc2021.android.socialar.dataTypes.UserData
-import java.io.File
 import kotlin.reflect.KFunction1
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.ktx.toObject
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -113,20 +107,23 @@ class FireBaseManager(val context: Context) {
     /**
      * Returns a list containing all message data of the specified userID
      * */
-    fun getMessagesByUser(userID: String): List<MessageData> {
-        val messages = mutableListOf<MessageData>()
+    fun getMessagesIDsByUser(userID: String, callBack: (ArrayList<String>) -> Unit) {
+        val messagesIDs = ArrayList<String>()
         db.collection(userCollection).document(userID).get().addOnSuccessListener {
-            val messagesIDs = it["messages"]
-            for (msgID in messagesIDs as ArrayList<*>)
+            val messagesIDsObjects = it["messages"]
+            for (msgIDObject in messagesIDsObjects as ArrayList<*>)
             {
-                db.collection(messageCollection).document(msgID.toString()).get().addOnSuccessListener { inner_it ->
-                    val newData = inner_it.toObject(MessageData::class.java)
-                    messages.add(newData!!)
-                }
+                messagesIDs.add(msgIDObject.toString())
             }
+            callBack(messagesIDs)
         }
+    }
 
-        return messages
+    fun getMessageDataByMessageID(messageId: String, callBack: (MessageData) -> Unit)
+    {
+        db.collection(messageCollection).document(messageId).get().addOnSuccessListener {
+            callBack(it.toObject(MessageData::class.java)!!)
+        }
     }
 
     /**

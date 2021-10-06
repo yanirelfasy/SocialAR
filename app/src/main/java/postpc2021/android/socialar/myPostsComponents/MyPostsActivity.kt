@@ -34,7 +34,7 @@ class MyPostsActivity : AppCompatActivity() {
         myPostsRecyclerView.adapter = adapter
         myPostsRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         adapter.onDeleteCallBack = {position ->
-            holder!!.deleteMyPost(holder!!.getCurrentMessageItems()!![position])
+            holder!!.deleteMyPost(holder!!.getCurrentMessageItems()[position])
         }
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {

@@ -3,6 +3,7 @@ package postpc2021.android.socialar.myPostsComponents
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import com.google.android.gms.tasks.Tasks
 import postpc2021.android.socialar.FirebaseWrapper
 import postpc2021.android.socialar.dataTypes.MessageData
 import postpc2021.android.socialar.dataTypes.PostData
@@ -13,7 +14,7 @@ import kotlin.collections.ArrayList
 
 class MyPostsItemsHolderImpl(context: Context): Serializable {
     private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
-    private var myMessagesList: List<MessageData>? = null
+    private var myMessagesList: MutableList<MessageData>? = null
     private var myPostsList: MutableList<PostData>? = ArrayList()
     private var myContext = context
 
@@ -22,8 +23,26 @@ class MyPostsItemsHolderImpl(context: Context): Serializable {
     }
 
     private fun initFromFB() {
-        myMessagesList = fireBaseManager.getMessagesByUser(fireBaseManager.getUserID())
+        fireBaseManager.getMessagesIDsByUser(fireBaseManager.getUserID(), ::getMessagesDataCallBack)
         Toast.makeText(myContext, "here", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getMessagesDataCallBack(messages: ArrayList<String>)
+    {
+        for (msgID in messages)
+        {
+            fireBaseManager.getMessageDataByMessageID(msgID, ::updateNewMessage)
+        }
+    }
+
+    private fun updateNewMessage(messageData: MessageData)
+    {
+        if(myMessagesList == null)
+        {
+            myMessagesList = ArrayList()
+        }
+        this.myMessagesList!!.add(messageData)
+        sendFBChanged("newMyPost", 0)
     }
 
     private fun sendFBChanged(action: String, old_position: Int) {
@@ -33,13 +52,20 @@ class MyPostsItemsHolderImpl(context: Context): Serializable {
     }
 
     fun getCurrentMessageItems(): ArrayList<MessageData> {
-        return myMessagesList as ArrayList<MessageData>
+        if(myMessagesList == null)
+        {
+            return ArrayList()
+        }
+        else
+        {
+            return myMessagesList as ArrayList<MessageData>
+        }
     }
 
     fun deleteMyPost(messageData: MessageData) {
         fireBaseManager.deleteMessage(messageData)
         sendFBChanged("deleteMyPost", myMessagesList!!.indexOf(messageData))
-        initFromFB()
+        this.myMessagesList!!.remove(messageData)
     }
 
     fun saveState(): Serializable {
@@ -55,17 +81,7 @@ class MyPostsItemsHolderImpl(context: Context): Serializable {
         myMessagesList = prevState.messagesData
     }
 
-//    fun getMyPostsLocationsList(): ArrayList<Pair<Double, Double>>?
-//    {
-//        val locations = ArrayList<Pair<Double, Double>>()
-//        for (item: MyPostsItem in myPostsList!!)
-//        {
-//            locations.add(Pair(item.getLongitude(), item.getLatitude()))
-//        }
-//        return locations
-//    }
-
     private class MyPostsListState : Serializable {
-        var messagesData: List<MessageData>? = null
+        var messagesData: MutableList<MessageData>? = null
     }
 }
