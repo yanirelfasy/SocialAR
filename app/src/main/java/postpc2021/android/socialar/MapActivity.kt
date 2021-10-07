@@ -36,6 +36,9 @@ import com.mapbox.mapboxsdk.plugins.building.BuildingPlugin
 import postpc2021.android.socialar.arComponents.ARView
 import postpc2021.android.socialar.dataTypes.MessageData
 import postpc2021.android.socialar.dataTypes.UserData
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 enum class MapMode {
@@ -102,6 +105,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		}
 	}
 
+	override fun onBackPressed() {
+
+	}
+
 	fun setUserData(userData: UserData){
 		val profileImageButton = findViewById<ImageButton>(R.id.profileButton)
 		if(!userData.profilePicture.isEmpty()){
@@ -122,6 +129,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		val requestCodeVerify = 424242
 		if(requestCode == requestCodeVerify && resultCode == RESULT_OK)
 		{
+			val sdf = SimpleDateFormat("MM-dd-yyyy")
+			val currentDate = sdf.format(Date())
 			val location = this.mapboxMap!!.locationComponent.lastKnownLocation!!
 			val userid = this.fireBaseManager.getUserID()
 			val postContent = data!!.getStringExtra("postContent").toString()
@@ -130,7 +139,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 					latitude=location.latitude,
 					longitude=location.longitude,
 					textContent=postContent,
-					mediaContent=mediaUris)
+					mediaContent=mediaUris,
+			creationDate = currentDate)
 			this.fireBaseManager.uploadMessage(newMessageData)
 			this.locations.add(newMessageData)
 		}

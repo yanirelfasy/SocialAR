@@ -27,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
         init()
     }
 
+    override fun onBackPressed() {
+        
+    }
+
 
 
     private fun init() {

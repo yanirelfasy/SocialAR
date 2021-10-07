@@ -19,6 +19,9 @@ import com.google.firebase.storage.ktx.storage
 import postpc2021.android.socialar.dataTypes.MessageData
 import postpc2021.android.socialar.dataTypes.PostData
 import postpc2021.android.socialar.dataTypes.UserData
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 import kotlin.reflect.KFunction1
 import kotlin.collections.ArrayList
 
@@ -84,9 +87,11 @@ class FireBaseManager(val context: Context) {
             mediaRef.downloadUrl
         }.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                downloadUri = task.result.toString()
+                mediaRef.downloadUrl.addOnSuccessListener {
+                    callBack(it.toString())
+                }
 //                downloadUri = mediaRef.downloadUrl.toString()
-                callBack(downloadUri)
+
             }
 
         }
@@ -301,6 +306,33 @@ class FireBaseManager(val context: Context) {
         db.collection(messageCollection).document(messageID).get().addOnSuccessListener {
             val message = it.toObject(MessageData::class.java)
             callBack(message!!.likeID.contains(userID), messageID)
+        }
+    }
+
+    fun isMessageUserFav(userID: String, messageID: String, callBack: (Boolean, String) -> Unit){
+        db.collection(userCollection).document(userID).get().addOnSuccessListener {
+            val user = it.toObject(UserData::class.java)
+            callBack(user!!.favorites.contains(messageID), messageID)
+        }
+    }
+
+    fun addToFavorites(userID: String, messageID: String, callBack: (Boolean, String) -> Unit){
+        db.collection(userCollection).document(userID).get().addOnSuccessListener {
+            val user = it.toObject(UserData::class.java)
+            user!!.favorites.add(messageID)
+            db.collection(userCollection).document(userID).set(user).addOnSuccessListener {
+                callBack(true, messageID)
+            }
+        }
+    }
+
+    fun removeFromFavorites(userID: String, messageID: String, callBack: (Boolean, String) -> Unit){
+        db.collection(userCollection).document(userID).get().addOnSuccessListener {
+            val user = it.toObject(UserData::class.java)
+            user!!.favorites.remove(messageID)
+            db.collection(userCollection).document(userID).set(user).addOnSuccessListener {
+                callBack(true, messageID)
+            }
         }
     }
 }
