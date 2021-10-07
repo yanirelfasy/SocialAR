@@ -12,19 +12,18 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class MyPostsItemsHolderImpl(context: Context): Serializable {
+class MyPostsItemsHolderImpl(context: Context, mode: String): Serializable {
     private val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
     private var myMessagesList: MutableList<MessageData>? = null
-    private var myPostsList: MutableList<PostData>? = ArrayList()
     private var myContext = context
+    private var mode = mode
 
     init{
         initFromFB()
     }
 
     private fun initFromFB() {
-        fireBaseManager.getMessagesIDsByUser(fireBaseManager.getUserID(), ::getMessagesDataCallBack)
-        Toast.makeText(myContext, "here", Toast.LENGTH_SHORT).show()
+        fireBaseManager.getMessagesIDsByUser(fireBaseManager.getUserID(), ::getMessagesDataCallBack, mode)
     }
 
     private fun getMessagesDataCallBack(messages: ArrayList<String>)
@@ -41,7 +40,7 @@ class MyPostsItemsHolderImpl(context: Context): Serializable {
         {
             myMessagesList = ArrayList()
         }
-        this.myMessagesList!!.add(messageData)
+        this.myMessagesList!!.add(0 ,messageData)
         sendFBChanged("newMyPost", 0)
     }
 
@@ -63,7 +62,8 @@ class MyPostsItemsHolderImpl(context: Context): Serializable {
     }
 
     fun deleteMyPost(messageData: MessageData) {
-        fireBaseManager.deleteMessage(messageData)
+
+        fireBaseManager.deleteMessage(messageData, mode=mode)
         sendFBChanged("deleteMyPost", myMessagesList!!.indexOf(messageData))
         this.myMessagesList!!.remove(messageData)
     }

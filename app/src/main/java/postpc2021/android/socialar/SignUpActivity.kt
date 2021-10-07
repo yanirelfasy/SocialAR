@@ -45,6 +45,7 @@ class SignUpActivity : AppCompatActivity() {
             val email = emailEditText.text.toString()
             val password = passEditText.text.toString()
             loadingProgressBar.visibility = View.VISIBLE
+            loadingProgressBar.bringToFront()
             if (email.isNotBlank() && password.isNotBlank()) {
                 firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {

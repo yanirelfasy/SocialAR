@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import postpc2021.android.socialar.FirebaseWrapper
 import postpc2021.android.socialar.LimitedMapActivity
 import postpc2021.android.socialar.MapActivity
 import postpc2021.android.socialar.R
@@ -14,6 +15,7 @@ import postpc2021.android.socialar.dataTypes.MessageData
 import java.util.ArrayList
 
 class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPostItemGui>() {
+    val fireBaseManager = FirebaseWrapper.getInstance().fireBaseManager
     private var items: MyPostsItemsHolderImpl? = holder
     private var guiHolderList: MutableList<MyPostItemGui>? = ArrayList()
     var onDeleteCallBack: ((Int)->Unit)?=null
@@ -44,8 +46,18 @@ class MyPostsAdapter(holder: MyPostsItemsHolderImpl?): RecyclerView.Adapter<MyPo
             callback(myPostItemGuiHolder.adapterPosition)
         })
         this.clickedPosition = myPostItemGuiHolder.adapterPosition
-        myPostItemGuiHolder.contentSummary.text = items!!.getCurrentMessageItems()[position].textContent
-        myPostItemGuiHolder.likes.text = items!!.getCurrentMessageItems()[position].likeID.size.toString()
+        val postText = items!!.getCurrentMessageItems()[position].textContent
+        var count = 14
+        if(postText.length < 15)
+        {
+            count = postText.length - 1
+        }
+        myPostItemGuiHolder.contentSummary.text =
+                postText.slice(0..count) + "..."
+        myPostItemGuiHolder.likes.text =
+                items!!.getCurrentMessageItems()[position].likeID.size.toString()
+        myPostItemGuiHolder.updateProfilePicture(items!!.getCurrentMessageItems()[position].userID,
+                fireBaseManager)
     }
 
     override fun getItemCount(): Int {

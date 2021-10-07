@@ -25,4 +25,8 @@
     <string name="title_activity_favorites_maps">FavoritesMapsActivity</string>
     <string name="post_title">Post Title</string>
     <string name="post_content">Post Content</string>
+    <string name="uploading">uploading...</string>
+    <string name="no_media_attached">No media attached</string>
+    <string name="delete_media">Delete Media</string>
+    <string name="logout">Logout</string>
 </resources>

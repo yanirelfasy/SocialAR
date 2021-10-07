@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.firebase.ui.auth.AuthUI
 import postpc2021.android.socialar.dataTypes.UserData
-import postpc2021.android.socialar.favoritesComponents.FavoritesActivity
 import postpc2021.android.socialar.myPostsComponents.MyPostsActivity
 
 class ProfileActivity : AppCompatActivity() {
@@ -37,15 +36,17 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         this.initFromSP()
-        val favoritesButton = findViewById<Button>(R.id.favoritesButton)  /// TODO: change favorites logo
+        val favoritesButton = findViewById<Button>(R.id.favoritesButton)
         favoritesButton.setOnClickListener {
-            val intent = Intent(this@ProfileActivity, FavoritesActivity::class.java)
+            val intent = Intent(this@ProfileActivity, MyPostsActivity::class.java)
+            intent.putExtra("mode", "favorites")
             startActivity(intent)
         }
 
         val myPostsButton = findViewById<Button>(R.id.myPostsButton)
         myPostsButton.setOnClickListener {
             val intent = Intent(this@ProfileActivity, MyPostsActivity::class.java)
+            intent.putExtra("mode", "myPosts")
             startActivity(intent)
         }
 

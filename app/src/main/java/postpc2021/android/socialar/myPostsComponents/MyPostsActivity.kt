@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import postpc2021.android.socialar.LimitedMapActivity
 import postpc2021.android.socialar.MapActivity
 import postpc2021.android.socialar.R
 
@@ -20,12 +21,18 @@ class MyPostsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_posts)
-
-        this.title = "My Posts"
-        holder = MyPostsItemsHolderImpl(this.applicationContext)
+        val mode = intent.extras!!.get("mode").toString()
+        if(mode == "myPosts") {
+            this.title = "My Posts"
+        }
+        else
+        {
+            this.title = "Favorites"
+        }
+        holder = MyPostsItemsHolderImpl(this.applicationContext, mode)
         val mapButton = findViewById<FloatingActionButton>(R.id.seeItemsOnMapButton)
         mapButton.setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java)
+            val intent = Intent(this, LimitedMapActivity::class.java)
             intent.putExtra("messages", holder!!.getCurrentMessageItems())
             this.startActivity(intent)
         }
@@ -46,6 +53,7 @@ class MyPostsActivity : AppCompatActivity() {
                     else if (intent.getIntExtra("deleteMyPost", -1) != -1) {
                         adapter.notifyItemRemoved(intent.getIntExtra("deleteMyPost",
                                 -1))
+                        adapter.notifyDataSetChanged()
                     }
                 }
             }

@@ -107,10 +107,15 @@ class FireBaseManager(val context: Context) {
     /**
      * Returns a list containing all message data of the specified userID
      * */
-    fun getMessagesIDsByUser(userID: String, callBack: (ArrayList<String>) -> Unit) {
+    fun getMessagesIDsByUser(userID: String, callBack: (ArrayList<String>) -> Unit,
+                             mode: String ="myPosts") {
         val messagesIDs = ArrayList<String>()
         db.collection(userCollection).document(userID).get().addOnSuccessListener {
-            val messagesIDsObjects = it["messages"]
+            val messagesIDsObjects = if(mode == "myPosts") {
+                it["messages"]
+            } else {
+                it["favorites"]
+            }
             for (msgIDObject in messagesIDsObjects as ArrayList<*>)
             {
                 messagesIDs.add(msgIDObject.toString())
@@ -122,7 +127,9 @@ class FireBaseManager(val context: Context) {
     fun getMessageDataByMessageID(messageId: String, callBack: (MessageData) -> Unit)
     {
         db.collection(messageCollection).document(messageId).get().addOnSuccessListener {
-            callBack(it.toObject(MessageData::class.java)!!)
+            if(it.data != null) {
+                callBack(it.toObject(MessageData::class.java)!!)
+            }
         }
     }
 
@@ -188,15 +195,23 @@ class FireBaseManager(val context: Context) {
             .addOnFailureListener { }
     }
 
-    fun deleteMessage(messageData: MessageData, callBack: () -> Unit = {}) {
-        db.collection(messageCollection).document(messageData.id).delete()
-                .addOnSuccessListener {
-                    // On success, update users message array with message ID
-                    val userRef = db.collection(userCollection).document(userID)
-                    userRef.update("messages", FieldValue.arrayRemove(messageData.id))
-                    callBack()
-                }
-                .addOnFailureListener { }
+    fun deleteMessage(messageData: MessageData, callBack: () -> Unit = {}, mode: String = "myPosts") {
+        if(mode == "myPosts") {
+            db.collection(messageCollection).document(messageData.id).delete()
+                    .addOnSuccessListener {
+                        // On success, update users message array with message ID
+                        val userRef = db.collection(userCollection).document(userID)
+                        userRef.update("messages", FieldValue.arrayRemove(messageData.id))
+                        callBack()
+                    }
+                    .addOnFailureListener { }
+        }
+        else
+        {
+            val userRef = db.collection(userCollection).document(userID)
+            userRef.update("favorites", FieldValue.arrayRemove(messageData.id))
+            callBack()
+        }
     }
 
 

@@ -15,6 +15,7 @@ data class UserData(
 		val profilePicture: String = "",
 		val dateOfBirth: String = "",
 		val joinDate: String = "",
-		val messages: ArrayList<String> = ArrayList()
+		val messages: ArrayList<String> = ArrayList(),
+		val favorites: ArrayList<String> = ArrayList()
 ) : Serializable {
 }

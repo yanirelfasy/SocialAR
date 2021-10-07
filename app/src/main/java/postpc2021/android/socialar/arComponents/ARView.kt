@@ -86,11 +86,15 @@ open class ARView : AppCompatActivity() {
 		if(requestCode == requestCodeVerify && resultCode == RESULT_OK)
 		{
 //			val location = this.mapboxMap!!.locationComponent.lastKnownLocation!!
-//			val userid = this.getSharedPreferences("usr_id",
-//					Context.MODE_PRIVATE).getString("usr_id", "").toString()
-//			val postcontent = data!!.getStringExtra("postcontent").toString()
-//			val newMessageData = MessageData(userid, location.latitude, location.longitude, postcontent)
-//			this.fireBaseManager.uploadMessage(newMessageData, true)
+//			val userid = this.fireBaseManager.getUserID()
+//			val postContent = data!!.getStringExtra("postContent").toString()
+//			val mediaUris = data.getStringArrayListExtra("mediaUris") as ArrayList
+//			val newMessageData = MessageData(userID=userid,
+//					latitude=location.latitude,
+//					longitude=location.longitude,
+//					textContent=postContent,
+//					mediaContent=mediaUris)
+//			this.fireBaseManager.uploadMessage(newMessageData)
 //			this.locations.add(newMessageData)
 
 		}

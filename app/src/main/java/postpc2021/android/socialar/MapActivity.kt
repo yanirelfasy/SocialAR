@@ -2,7 +2,6 @@ package postpc2021.android.socialar
 
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -19,7 +18,6 @@ import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
@@ -126,11 +124,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListener
 		{
 			val location = this.mapboxMap!!.locationComponent.lastKnownLocation!!
 			val userid = this.fireBaseManager.getUserID()
-			val postcontent = data!!.getStringExtra("postcontent").toString()
-			val newMessageData = MessageData(userid, location.latitude, location.longitude, postcontent)
+			val postContent = data!!.getStringExtra("postContent").toString()
+			val mediaUris = data.getStringArrayListExtra("mediaUris") as ArrayList
+			val newMessageData = MessageData(userID=userid,
+					latitude=location.latitude,
+					longitude=location.longitude,
+					textContent=postContent,
+					mediaContent=mediaUris)
 			this.fireBaseManager.uploadMessage(newMessageData)
 			this.locations.add(newMessageData)
-
 		}
 	}
 

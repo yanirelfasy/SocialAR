@@ -109,6 +109,10 @@ class LimitedMapActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsL
             val symbolManager = SymbolManager(mapView!!, mapboxMap, style);
             symbolManager.iconAllowOverlap = true;
             symbolManager.textAllowOverlap = true;
+            this.mode = MapMode.TOP
+            mapboxMap.setMaxZoomPreference(25.0)
+            mapboxMap.setMinZoomPreference(0.0)
+            setCameraTrackingMode(CameraMode.NONE)
             drawMarkersInMap(symbolManager)
         }
     }

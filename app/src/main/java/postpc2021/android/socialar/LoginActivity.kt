@@ -62,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun userSignIn(email: String, password: String) {
         loadingProgressBar.visibility = View.VISIBLE
+        loadingProgressBar.bringToFront()
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 loadingProgressBar.visibility = View.GONE
