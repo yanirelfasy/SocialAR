@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@+id/nameText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="Just few more derails..."
+        android:text="Just few more details..."
         android:textSize="20dp"
         android:textColor="@color/black"
         android:fontFamily="@font/ulight"
