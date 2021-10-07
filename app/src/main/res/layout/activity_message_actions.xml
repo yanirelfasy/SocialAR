@@ -149,7 +149,8 @@
         app:layout_constraintBottom_toTopOf="@+id/actionsBar"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="50dp"
-        android:src="@android:drawable/ic_menu_myplaces"
+        android:src="@android:drawable/btn_star_big_off"
+        android:id="@+id/favButton"
         />
 
 

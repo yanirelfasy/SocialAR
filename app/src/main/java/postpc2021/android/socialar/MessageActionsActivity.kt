@@ -25,6 +25,7 @@ class MessageActionsActivity : AppCompatActivity() {
 		val extras = intent.extras
 		firebase.getPostDetailsFromMessage(extras!!.getString("id"), ::setMessageData)
 		firebase.isUserLikeMessage(firebase.getUserID(), extras.getString("id")!!, ::setLikeButtonStatus)
+		firebase.isMessageUserFav(firebase.getUserID(),  extras.getString("id")!!, ::setFavButtonStatus)
 
 	}
 
@@ -44,10 +45,27 @@ class MessageActionsActivity : AppCompatActivity() {
 		}
 	}
 
+	fun setFavButtonStatus(isFavPressed: Boolean, messageID: String): Unit {
+		val favButton = findViewById<ImageButton>(R.id.favButton)
+		if(isFavPressed){
+			favButton.setImageResource(android.R.drawable.btn_star_big_on)
+			favButton.setOnClickListener {
+				firebase.removeFromFavorites(firebase.getUserID(), messageID, ::setFavButtonStatus)
+			}
+		}
+		else{
+			favButton.setImageResource(android.R.drawable.btn_star_big_off)
+			favButton.setOnClickListener {
+				firebase.addToFavorites(firebase.getUserID(), messageID, ::setFavButtonStatus)
+			}
+
+		}
+	}
+
 	@RequiresApi(Build.VERSION_CODES.O)
 	fun setMessageData(data: PostData): Unit{
-		val date = SimpleDateFormat("dd-MM-yyyy").parse(data.creationDate)
-		val formattedDate = SimpleDateFormat("dd/MM/yyy").format(date!!)
+		val date = SimpleDateFormat("MM-dd-yyyy").parse(data.creationDate)
+		val formattedDate = SimpleDateFormat("MM-dd-yyyy").format(date!!)
 		findViewById<TextView>(R.id.userName).text = data.userName
 		findViewById<TextView>(R.id.likes).text = "${data.likeID.size} Likes"
 		findViewById<TextView>(R.id.date).text = formattedDate.toString()
