@@ -1,6 +1,7 @@
 package postpc2021.android.socialar
 
 import android.content.Context
+import android.os.Message
 
 import androidx.core.net.toUri
 
@@ -273,6 +274,33 @@ class FireBaseManager(val context: Context) {
         db.collection(userCollection).document(userID).get().addOnSuccessListener {
             val document = it.toObject(UserData::class.java)
             callBack(document?.userName != null)
+        }
+    }
+
+    fun likeMessage(userID: String, messageID: String, callBack: (Boolean, String) -> Unit){
+        db.collection(messageCollection).document(messageID).get().addOnSuccessListener {
+            val message = it.toObject(MessageData::class.java)
+            message!!.likeID.add(userID)
+            db.collection(messageCollection).document(messageID).set(message).addOnSuccessListener {
+                callBack(true, messageID)
+            }
+        }
+    }
+
+    fun dislikeMessage(userID: String, messageID: String, callBack: (Boolean, String) -> Unit){
+        db.collection(messageCollection).document(messageID).get().addOnSuccessListener {
+            val message = it.toObject(MessageData::class.java)
+            message!!.likeID.remove(userID)
+            db.collection(messageCollection).document(messageID).set(message).addOnSuccessListener {
+                callBack(false, messageID)
+            }
+        }
+    }
+
+    fun isUserLikeMessage(userID: String, messageID: String, callBack: (Boolean, String) -> Unit){
+        db.collection(messageCollection).document(messageID).get().addOnSuccessListener {
+            val message = it.toObject(MessageData::class.java)
+            callBack(message!!.likeID.contains(userID), messageID)
         }
     }
 }
