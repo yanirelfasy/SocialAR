@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@+id/nameText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="Just few more derails..."
+        android:text="Just few more details..."
         android:textSize="20dp"
         android:textColor="@color/black"
         android:fontFamily="@font/ulight"
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/birthdayText"
         android:layout_marginBottom="76dp"
-
+        android:fontFamily="@font/ureg"
         android:text="Sign Up"
         app:layout_constraintBottom_toBottomOf="@id/signup_background"
         app:layout_constraintEnd_toEndOf="@+id/signup_background"
